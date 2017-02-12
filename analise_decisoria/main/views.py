@@ -9,3 +9,6 @@ def insert_valores(request):
 
 def resultado_matriz(request):
     return render(request, 'main/resultado_matriz.html', {})
+
+def sobre(request):
+    return render(request, 'main/sobre.html', {})
