@@ -6,3 +6,6 @@ def menu_principal(request):
 
 def insert_valores(request):
     return render(request, 'main/insert_valores.html', {})
+
+def resultado_matriz(request):
+    return render(request, 'main/resultado_matriz.html', {})
