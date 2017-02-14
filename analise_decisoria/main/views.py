@@ -12,3 +12,6 @@ def resultado_matriz(request):
 
 def sobre(request):
     return render(request, 'main/sobre.html', {})
+
+def ahp_insert_valores(request):
+    return render(request, 'ahp/ahp_insert_valores.html', {})
