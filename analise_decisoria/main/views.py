@@ -15,3 +15,10 @@ def sobre(request):
 
 def ahp_insert_valores(request):
     return render(request, 'ahp/ahp_insert_valores.html', {})
+
+def captura_entrada (request):
+    if request.method == 'POST':
+        formCapEntra  = captura_entrada_form(request.POST)
+        if formCapEntra.is_valid():
+            formCapEntra.save()
+            return redirect('sobre')

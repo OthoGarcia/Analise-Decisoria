@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class captura_entrada(model.models):
+    qtdeCriterio    =  models.CharField(max_length=3, validators=[numeric])
+    qtdeAlternativa =  models.CharField(max_length=3, validators=[numeric])
