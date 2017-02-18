@@ -1,38 +1,59 @@
 {% extends 'main/base.html' %}
 {% load staticfiles %}
 {% block content %}
-    <br></br>
-    <div class="container-fluid">
-           <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-             <div class="panel panel-success" >
-                    <div class="panel-heading">
-                        <div class="panel-title"><b>Informe o Foco Principal:</b></div>
-                        <div style="float:right; font-size: 80%; position: relative; top:-10px"></div>
-                        <form id="loginform" class="form-horizontal" role="form" method="POST" >
-                            <div class="form-group">
-                                <label for="firstname" class="col-md-3 control-label">Foco Principal</label>
-                                <div class="col-md-9">
-                                    <input type="text" required class="form-control" name="focoprincipal" placeholder="Informe o foco principal">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="panel-title"><b>Informe os Criterio:</b></div>
-                                <label for="firstname" class="col-md-3 control-label">Criterios</label>
-                                <div class="col-md-9">
-                                    <input type="text" required class="form-control" name="criterio" placeholder="Informe o nome do criterio">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="panel-title"><b>Informe as Alternativas:</b></div>
-                                <label for="firstname" class="col-md-3 control-label">Alternativas</label>
-                                <div class="col-md-9">
-                                    <input type="text" required class="form-control" name="alternativa" placeholder="Informe o nome do criterio">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<br></br>
+<div class="container-fluid">
+ <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+   <div class="panel panel-success" >
+    <div class="panel-heading">
+        <div class="panel-title"><b>Informe o Foco Principal:</b></div>
+        <div style="float:right; font-size: 80%; position: relative; top:-10px"></div>
+        <form id="loginform" class="form-horizontal" role="form" method="POST" >
+            <div class="form-group">
+                <label for="firstname" class="col-md-3 control-label">Foco Principal</label>
+                <div class="col-md-9">
+                    <input type="text" required class="form-control" name="focoprincipal" placeholder="Informe o foco principal">
+                </div>
             </div>
-          </div>
+
+            <div class="form-group">
+                <div class="panel-title"><b>Informe os Criterio:</b></div>
+            </div>
+            <div>
+                <input type="button" id="add_field" value="adicionar">  
+            </div>
+            <div id="grupo">
+                <div>
+                <label for="criterio" class="control-label">Criterio:</label>
+                    <input type="text" required  name="criterio[]" placeholder="Informe o nome do criterio">
+                </div>
+                <div>
+                    <label for="criterio" class="control-label">Criterio:</label>
+                    <input type="text" required name="criterio[]" placeholder="Informe o nome do criterio">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="panel-title"><b>Informe as Alternativas:</b></div>
+            </div>
+            <div>
+                <input type="button" id="add_field2" value="adicionar">  
+            </div>
+            <div id="grupo2">
+                <div>
+                <label for="criterio" class="control-label">Alternativa:</label>
+                    <input type="text" required  name="alternativa[]" placeholder="Informe o nome da alternativa">
+                </div>
+                <div>
+                    <label for="alternativa" class="control-label">Alternativa:</label>
+                    <input type="text" required name="alternativa[]" placeholder="Informe o nome da alternativa">
+                </div>
+            </div>
+
+        </form>
     </div>
+</div>
+</div>
+</div>
+<!-- <script type="text/javascript" src="{% static 'jquery/jquery.min.js' %}"></script> -->
+<script type="text/javascript" src="{% static 'js/forms_ahp.js' %}"></script>
 {% endblock %}
