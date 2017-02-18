@@ -16,9 +16,13 @@ def sobre(request):
 def ahp_insert_valores(request):
     return render(request, 'ahp/ahp_insert_valores.html', {})
 
-def captura_entrada (request):
+def qtdeCriterioAlternativa (request):
     if request.method == 'POST':
         formCapEntra  = captura_entrada_form(request.POST)
         if formCapEntra.is_valid():
             formCapEntra.save()
             return redirect('sobre')
+        else:
+			return render(request, 'main/qtdeCriterioAlternativa.html',{'form': form})
+    else:
+		return render(request, 'main/qtdeCriterioAlternativa.html',{'form': captura_entrada_form()})
