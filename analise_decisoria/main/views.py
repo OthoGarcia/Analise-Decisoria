@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .forms import captura_entrada_form
 
 # Create your views here.
 def menu_principal(request):
