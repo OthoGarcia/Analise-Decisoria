@@ -25,10 +25,12 @@ def ahp_foco_principal(request):
     return render(request, 'ahp/ahp_foco_principal.html', {'form': FocoPrincipal_Form()})
 
 def qtdeCriterioAlternativa (request):
-    if request.method == 'POST':
-        formCapEntra  = captura_entrada_form(request.POST)
+    if request.method   == 'POST':
+        formCapEntra     = captura_entrada_form(request.POST)
+        qtdeCriterio     = request.POST['qtdeCriterio']
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
         if formCapEntra.is_valid():
-            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': request.POST['qtdeCriterio']})
+            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
         else:
 			return render(request, 'main/qtdeCriterioAlternativa.html',{'form': form})
     else:
