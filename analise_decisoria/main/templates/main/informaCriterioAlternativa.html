@@ -3,6 +3,16 @@
 {% block content %}
 
 {% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
-{{ qtdeCriterio }}
-
+  <br></br>
+  <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
+      <div class="panel panel-success" >
+          <div class="panel-heading">
+              <div class="panel-title"><b>Informe os Critérios:</b></div>
+              {% for i in "x"|rjust:qtdeCriterio %}
+                  <br></br>
+                  <label>Pesquisar: </label>
+              {% endfor %}
+          </div>
+      </div>
+  </div>
 {% endblock %}

@@ -27,8 +27,9 @@ def ahp_foco_principal(request):
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':
         formCapEntra     = captura_entrada_form(request.POST)
-        qtdeCriterio     = request.POST['qtdeCriterio']
         qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
         if formCapEntra.is_valid():
             return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
         else:
