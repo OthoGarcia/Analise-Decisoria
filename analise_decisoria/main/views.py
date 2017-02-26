@@ -28,8 +28,7 @@ def qtdeCriterioAlternativa (request):
     if request.method == 'POST':
         formCapEntra  = captura_entrada_form(request.POST)
         if formCapEntra.is_valid():
-            formCapEntra.save()
-            return redirect('sobre')
+            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': request.POST['qtdeCriterio']})
         else:
 			return render(request, 'main/qtdeCriterioAlternativa.html',{'form': form})
     else:
