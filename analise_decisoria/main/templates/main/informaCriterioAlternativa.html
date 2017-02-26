@@ -1,0 +1,8 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+{% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
+{{ qtdeCriterio }}
+
+{% endblock %}
