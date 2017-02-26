@@ -4,15 +4,44 @@
 
 {% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
   <br></br>
-  <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
-      <div class="panel panel-success" >
-          <div class="panel-heading">
-              <div class="panel-title"><b>Informe os Critérios:</b></div>
-              {% for i in "x"|rjust:qtdeCriterio %}
-                  <br></br>
-                  <label>Pesquisar: </label>
-              {% endfor %}
+  <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
+          <div class="panel panel-success" >
+              <div class="panel-heading">
+                  <div class="panel-title"><b>Informe os Critérios:</b></div>
+                  <div class="form-group">
+                    {% for i in "x"|rjust:qtdeCriterio %}
+                      <label for="firstname" class="col-md-3 control-label">Critério {{ forloop.counter }}</label>
+                      <div class="col-md-9">
+                          <input required class="form-control" name="Criterio{{ forloop.counter }} " placeholder="Informe o Criterio">
+                      </div>
+                      <br></br>
+                    {% endfor %}
+                  </div>
+              </div>
           </div>
       </div>
-  </div>
+
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
+          <div class="panel panel-success" >
+              <div class="panel-heading">
+                  <div class="panel-title"><b>Informe as Alternativas:</b></div>
+                    <div class="form-group">
+                  {% for i in "x"|rjust:qtdeAlternativa %}
+                      <label for="firstname" class="col-md-3 control-label">Alternativa {{ forloop.counter }}</label>
+                      <div class="col-md-9">
+                          <input required class="form-control" name="Alternativa{{ forloop.counter }} " placeholder="Informe a Alternativa">
+                      </div>
+                      <br></br>
+                  {% endfor %}
+                    </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="mainbox col-md-6">
+        <button class="btn btn-lg btn-primary btn-success" type="submit">Confirmar</button>
+        <a class="btn btn-lg btn-primary btn-danger" href="\">Cancelar</a>
+      </div>
+  </form>
 {% endblock %}
