@@ -24,7 +24,7 @@ def ahp_insert_valores(request):
         qtdeCriterio     = request.POST['qtdeCriterio']
 
         if formCapEntra.is_valid():
-            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
+            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'focoPrincipal': focoPrincipal, 'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
         else:
             return render(request, 'ahp/ahp_insert_valores.html',{'form': formCapEntra})
     else:
