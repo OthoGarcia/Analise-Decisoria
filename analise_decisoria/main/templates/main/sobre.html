@@ -3,14 +3,91 @@
 {% block content %}
 <br></br>
 <br></br>
-
+<script>
+  smoothScroll.init();
+</script>
 <div class="container">
 <!-- Jumbotron -->
    <div class="jumbotron">
      <h1>Quem Somos?!</h1>
      <p class="lead">Alunos do sétimo período de sistemas de informação, que através da disciplina de Tópicos Avançados desenvolveram um site para o auxílio de tomadas de decisões.</p>
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de deciões.</p>
    </div>
-</div>
+
+   <div class="col-md-12 col-md-offset-3">
+     <div class="form-group">
+       <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Desenvolvedores"><img align='middle' width='720px' height='480px' src="{% static 'Imagens/Equipe.jpg' %}" alt="ds"></a>
+       <p class="lead">Equipe de desenvolvimento do site.</p>
+     </div>
+   </div>
+
+   <div class="jumbotron col-md-12">
+     <h1>O Projeto!</h1>
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>
+     <p class="lead">Na escola francesa foram utilizados os métodos de Electre I, Electre III, Electre Tri, Soft Electre Tri. </p>
+     <p class="lead">Na escola americana foi utilizado o método AHP.</p>
+   </div>
+   <h1>Escola Francesa <img align='middle' width='50' height='50px' src="{% static 'Imagens/franca.png' %}" alt="ds"></h1>
+   <div class="panel panel-primary" ></div>
+
+   <div class="col-md-3">
+     <h1 class="text-primary">Electre I</h1>
+   </div>
+
+   <div class="col-md-9 bs-callout bs-callout-primary">
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+   </div>
+
+   <div class="col-md-3">
+     <h1 class="text-primary">Electre III</h1>
+   </div>
+
+   <div class="col-md-9 bs-callout bs-callout-primary">
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+   </div>
+
+   <div class="col-md-3">
+     <h1 class="text-primary">Electre Tri</h1>
+   </div>
+
+   <div class="col-md-9 bs-callout bs-callout-primary">
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+   </div>
+
+   <div class="col-md-3">
+     <h1 class="text-primary">Soft Electre Tri</h1>
+   </div>
+
+   <div class="col-md-9 bs-callout bs-callout-primary">
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+   </div>
+
+
+   <h1>Escola Americana <img align='middle' width='50' height='50px' src="{% static 'Imagens/estados-unidos.png' %}" alt="ds"></h1>
+   <div class="panel panel-success" ></div>
+
+   <div class="col-md-3">
+     <h1 class="text-success">AHP</h1>
+   </div>
+
+   <div class="col-md-9 bs-callout bs-callout-success">
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+   </div>
+
+
+   <h1 id="Desenvolvedores">Desenvolvedores <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
+   <div class="panel panel-danger" ></div>
+   
+   <div class="container-fluid">
+     <div class="col-6 col-md-3 placeholder">
+       <img class="img-responsive img-circle" src="{% static 'Imagens/Ailton.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+         <div class="col-6 col-md-9">
+           <h4 align="center">Ailton Prata Júnior</h4>
+         </div>
+     </div>
+
+     <div class="col-md-9 bs-callout bs-callout-danger">
+       <p class="lead">Aluno do 7° Período de Sistemas de Informação no Instituto Federal Fluminense.</p>
+     </div>
+   </div>
 
 {% endblock %}

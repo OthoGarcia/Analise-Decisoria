@@ -10,16 +10,18 @@
                         <div style="float:right; font-size: 80%; position: relative; top:-10px"></div>
 
                         <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+                          {% csrf_token %}
                            <div class="form-group">
                              <label for="firstname" class="col-md-3 control-label">Quantidade de Criterio:</label>
-                             {{ form.qtdeAlternativa }}
+                             {{ form.qtdeCriterio }}
                            </div>
 
                            <div class="form-group">
                              <label for="firstname" class="col-md-3 control-label">Quantidade Alternativa:</label>
-                             {{ form.qtdeCriterio }}
+                             {{ form.qtdeAlternativa }}
                            </div>
-
+                           <button class="btn btn-lg btn-primary btn-success" type="submit">Confirmar</button>
+                           <a class="btn btn-lg btn-primary btn-danger" href="\">Cancelar</a>
                         </form>
 
                     </div>

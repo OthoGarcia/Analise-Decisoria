@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^ahp/focoprincipaltest/$', views.ahp_foco_principal_test, name='ahp_foco_principal_test'),
     url(r'^ahp/resultado/$', views.ahp_resultado, name='ahp_resultado'),
     url(r'^main/qtdeCriterioAlternativa/$', views.qtdeCriterioAlternativa, name='qtdeCriterioAlternativa'),
+    url(r'^main/arquivo/$', views.upload_file, name='inserirArquivo'),
+    url(r'^main/dados/$', views.csv_reader, name='dados'),
 ]
