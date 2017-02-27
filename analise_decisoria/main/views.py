@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, render_to_response
 from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm
 import csv
+from django.template.context_processors import csrf
 
 
 # Create your views here.
@@ -44,15 +45,15 @@ def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            csv_reader(request.FILES['file'])
-            return HttpResponseRedirect('/success/url/')
+            csv_reader(request)
     else:
         form = UploadFileForm()
-    return render_to_response('main/insert_tema_tamanho.html', {'arquivo': form})
+    return render(request, 'main/insert_tema_tamanho.html', {'arquivo': form})
 
-def csv_reader(file_obj):
+def csv_reader(request):
     """
     Read a csv file
     """
-    reader = csv.reader(file_obj)
-    return render('main/dados.html', {'dados', reader})
+    file = request.FILES['file']
+    data = [row for row in csv.reader(file.read().splitlines())]
+    return render(request,'main/dados.html', {'dados': data})
