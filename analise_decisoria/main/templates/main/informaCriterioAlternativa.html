@@ -12,9 +12,14 @@
                   <div class="form-group">
                     {% for i in "x"|rjust:qtdeCriterio %}
                       <label for="firstname" class="col-md-3 control-label">Critério {{ forloop.counter }}</label>
-                      <div class="col-md-9">
-                          <input required class="form-control" name="Criterio{{ forloop.counter }} " placeholder="Informe o Criterio">
+                      <div class="col-md-6">
+                        <input required  style="width:300px" class="form-control" name="Criterio{{ forloop.counter }} " placeholder="Informe o Criterio">
                       </div>
+
+                      <div class="col-md-3">
+                        <input required type="number" style="width:80px" class="form-control" name="PesoCriterio{{ forloop.counter }} " placeholder="Peso">
+                      </div>
+
                       <br></br>
                     {% endfor %}
                   </div>

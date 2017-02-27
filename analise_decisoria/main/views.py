@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, render_to_response
-from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm
+from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm, Criterio_AHP_Form
 import csv
 from django.template.context_processors import csrf
-
 
 # Create your views here.
 def menu_principal(request):
@@ -26,6 +25,9 @@ def ahp_resultado(request):
 
 def ahp_foco_principal(request):
     return render(request, 'ahp/ahp_foco_principal.html', {'form': FocoPrincipal_Form()})
+
+def ahp_foco_principal_test(request):
+    return render(request, 'ahp/ahp_foco_principal_test.html', {'form': FocoPrincipal_Form()})
 
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':
