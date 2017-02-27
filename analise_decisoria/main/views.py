@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import captura_entrada_form, FocoPrincipal_Form
+from .forms import captura_entrada_form, FocoPrincipal_Form, Criterio_AHP_Form
 
 # Create your views here.
 def menu_principal(request):
@@ -18,11 +18,14 @@ def ahp_insert_valores(request):
     return render(request, 'ahp/ahp_insert_valores.html', {})
 
 def ahp_resultado(request):
-    resultado=request.POST['focoPrincipal'] ## é assim que recupera os dados de uma variavel.
-    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado})## Enviando o resultado para a próxima página.
+    resultado=request.POST['focoPrincipal']
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado})
 
 def ahp_foco_principal(request):
     return render(request, 'ahp/ahp_foco_principal.html', {'form': FocoPrincipal_Form()})
+
+def ahp_foco_principal_test(request):
+    return render(request, 'ahp/ahp_foco_principal_test.html', {'form': FocoPrincipal_Form()})
 
 def qtdeCriterioAlternativa (request):
     if request.method == 'POST':

@@ -5,3 +5,9 @@ class captura_entrada_form(forms.Form):
     qtdeAlternativa = forms.IntegerField()
 class FocoPrincipal_Form(forms.Form):
     focoPrincipal = forms.CharField(label='Foco Principal', max_length=100)
+
+class Criterio_AHP_Form(forms.Form):
+    criterio = forms.CharField(label='Criterio', max_length=100)
+
+class Alternativa_AHP_Form(forms.Form):
+    alternativa = forms.CharField(label='Alternativa', max_length=100)

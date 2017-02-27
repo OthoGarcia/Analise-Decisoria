@@ -8,7 +8,7 @@ $(document).ready(function() {
 		if (x <= campos_criterio_max) {
 			$('#grupo_criterio').append('<div>\
 			<label for="criterio" class="control-label">Criterio:</label>\
-			<input type="text" required  name="criterio[]" placeholder="Informe o nome do criterio">\
+			<input type="text" required  name="criterio" placeholder="Informe o nome do criterio">\
 			<a href="#" class="remover_campo_criterio btn btn-danger">Remover</a>\
 			</div>');
 			x++;
@@ -26,7 +26,7 @@ $(document).ready(function() {
 		if (y <= campos_alternativa_max) {
 			$('#grupo_alternativa').append('<div>\
 			<label for="alternativa" class="control-label">Alternativa:</label>\
-			<input type="text" required  name="alternativa[]" placeholder="Informe o nome da alternativa">\
+			<input type="text" required  name="alternativa" placeholder="Informe o nome da alternativa">\
 			<a href="#" class="remover_campo_alternativa btn btn-danger">Remover</a>\
 			</div>');
 			y++;
