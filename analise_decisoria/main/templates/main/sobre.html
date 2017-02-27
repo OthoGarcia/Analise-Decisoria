@@ -3,6 +3,9 @@
 {% block content %}
 <br></br>
 <br></br>
+<script>
+  smoothScroll.init();
+</script>
 <div class="container">
 <!-- Jumbotron -->
    <div class="jumbotron">
@@ -12,7 +15,7 @@
 
    <div class="col-md-12 col-md-offset-3">
      <div class="form-group">
-       <img align='middle' width='720px' height='480px' src="{% static 'Imagens/Equipe.jpg' %}" alt="ds">
+       <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Desenvolvedores"><img align='middle' width='720px' height='480px' src="{% static 'Imagens/Equipe.jpg' %}" alt="ds"></a>
        <p class="lead">Equipe de desenvolvimento do site.</p>
      </div>
    </div>
@@ -71,7 +74,7 @@
    </div>
 
 
-   <h1>Desenvolvedores <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
+   <h1 id="Desenvolvedores">Desenvolvedores <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
    <div class="panel panel-danger" ></div>
    <div class="container-fluid">
      <div class="col-6 col-md-3 placeholder">
