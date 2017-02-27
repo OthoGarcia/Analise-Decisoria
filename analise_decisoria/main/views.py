@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, render_to_response
-from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm, captura_entrada_AHP_Form
+from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form
 import csv
 from django.template.context_processors import csrf
 
@@ -16,6 +16,24 @@ def resultado_matriz(request):
 def sobre(request):
     return render(request, 'main/sobre.html', {})
 
+def ahp_informaCriterioAlternativa(request):
+    resultado=request.POST['focoPrincipal']
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado} )
+
+
+"""def ahp_insert_valores(request):
+    if request.method == 'POST':
+        formCapEntra     = captura_entrada_AHP_Form(request.POST)
+        focoPrincipal    = request.POST['focoPrincipal']
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
+        if formCapEntra.is_valid():
+            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'focoPrincipal': focoPrincipal, 'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
+        else:
+            return render(request, 'ahp/ahp_insert_valores.html',{'form': formCapEntra})
+    else:
+        return render(request, 'ahp/ahp_insert_valores.html',{'form': captura_entrada_AHP_Form()})"""
 def ahp_insert_valores(request):
     if request.method == 'POST':
         formCapEntra     = captura_entrada_AHP_Form(request.POST)
@@ -23,6 +41,10 @@ def ahp_insert_valores(request):
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
 
+        c={}
+        for i in range(qtdeCriterio):
+            c['crt'.i]=forms.CharField(max_length=100)
+            """ CriterioAlternativa_Form(c)"""
         if formCapEntra.is_valid():
             return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'focoPrincipal': focoPrincipal, 'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
         else:
