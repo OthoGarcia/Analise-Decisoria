@@ -10,7 +10,8 @@
 <!-- Jumbotron -->
    <div class="jumbotron">
      <h1>Quem Somos?!</h1>
-     <p class="lead">Alunos do sétimo período de sistemas de informação, que através da disciplina de Tópicos Avançados desenvolveram um site para o auxílio de tomadas de decisões.</p>
+     <p class="lead">Graduandos do sétimo período de sistemas de informação, que através da disciplina de Tópicos Avançados desenvolveram um site para o auxílio de tomadas de decisões.</p>
+     <p class="lead">Utilizando métodos das escolas <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">Francesa</a> e <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">Americana</a> para o processamento dos dados. </p>
    </div>
 
    <div class="col-md-12 col-md-offset-3">
@@ -20,14 +21,15 @@
      </div>
    </div>
 
-   <div class="jumbotron col-md-12">
-     <h1>O Projeto!</h1>
+   <div class="jumbotron col-md-12" id="Francesa">
+     <h1>O Projeto! <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
      <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>
-     <p class="lead">Na escola francesa foram utilizados os métodos de Electre I, Electre III, Electre Tri, Soft Electre Tri. </p>
-     <p class="lead">Na escola americana foi utilizado o método AHP.</p>
+     <p class="lead">Na escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">francesa</a> foram utilizados os métodos de Electre I, Electre III, Electre Tri, Soft Electre Tri. </p>
+     <p class="lead">Na escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">americana</a> foi utilizado o método AHP.</p>
    </div>
+
    <h1>Escola Francesa <img align='middle' width='50' height='50px' src="{% static 'Imagens/franca.png' %}" alt="ds"></h1>
-   <div class="panel panel-primary" ></div>
+   <div class="panel panel-primary" id="Francesa" ></div>
 
    <div class="col-md-3">
      <h1 class="text-primary">Electre I</h1>
@@ -57,13 +59,13 @@
      <h1 class="text-primary">Soft Electre Tri</h1>
    </div>
 
-   <div class="col-md-9 bs-callout bs-callout-primary">
+   <div class="col-md-9 bs-callout bs-callout-primary" id="Americana">
      <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
    </div>
 
 
    <h1>Escola Americana <img align='middle' width='50' height='50px' src="{% static 'Imagens/estados-unidos.png' %}" alt="ds"></h1>
-   <div class="panel panel-success" ></div>
+   <div class="panel panel-success"></div>
 
    <div class="col-md-3">
      <h1 class="text-success">AHP</h1>
@@ -72,7 +74,6 @@
    <div class="col-md-9 bs-callout bs-callout-success">
      <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
    </div>
-
 
    <h1 id="Desenvolvedores">Desenvolvedores <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
    <div class="panel panel-danger" ></div>
@@ -86,7 +87,7 @@
      </div>
 
      <div class="col-md-9 bs-callout bs-callout-danger">
-       <p class="lead">Aluno do 7° Período de Sistemas de Informação no Instituto Federal Fluminense.</p>
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense.</p>
      </div>
    </div>
 
@@ -99,20 +100,85 @@
      </div>
 
      <div class="col-md-9 bs-callout bs-callout-danger">
-       <p class="lead">Aluno do 7° Período de Sistemas de Informação no Instituto Federal Fluminense. Desenvolverdor de aplicações Mobile, Web e Desktop.</p>
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense. Desenvolverdor de aplicações Mobile, Web e Desktop.</p>
+     </div>
+   </div>
+
+   <div class="container-fluid">
+     <div class="col-6 col-md-3 placeholder">
+       <img class="img-responsive img-circle" src="{% static 'Imagens/Desenvolvedores/Daniel.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+         <div class="col-6 col-md-9">
+           <h4 align="center">Daniel Diniz</h4>
+         </div>
+     </div>
+
+     <div class="col-md-9 bs-callout bs-callout-danger">
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense.</p>
+     </div>
+   </div>
+
+   <div class="container-fluid">
+     <div class="col-6 col-md-3 placeholder">
+       <img class="img-responsive img-circle" src="{% static 'Imagens/Desenvolvedores/Ederson.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+         <div class="col-6 col-md-9">
+           <h4 align="center">Ederson Ribeiro</h4>
+         </div>
+     </div>
+
+     <div class="col-md-9 bs-callout bs-callout-danger">
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense.</p>
+     </div>
+   </div>
+
+   <div class="container-fluid">
+     <div class="col-6 col-md-3 placeholder">
+       <img class="img-responsive img-circle" src="{% static 'Imagens/Desenvolvedores/Lucas.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+       <div class="col-6 col-md-9">
+         <h4 align="center">Lucas Siqueira</h4>
+       </div>
+     </div>
+
+     <div class="col-md-9 bs-callout bs-callout-danger">
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense.</p>
      </div>
    </div>
 
    <div class="container-fluid">
      <div class="col-6 col-md-3 placeholder">
        <img class="img-responsive img-circle" src="{% static 'Imagens/Desenvolvedores/Otho.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-         <div class="col-6 col-md-9">
-           <h4 align="center">Otho Garcia</h4>
-         </div>
+       <div class="col-6 col-md-9">
+         <h4 align="center">Otho Garcia</h4>
+       </div>
      </div>
 
      <div class="col-md-9 bs-callout bs-callout-danger">
-       <p class="lead">Aluno do 7° Período de Sistemas de Informação no Instituto Federal Fluminense. Desenvolverdor de aplicações Web e Desktop.</p>
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense. Desenvolverdor de aplicações Web e Desktop.</p>
+     </div>
+   </div>
+
+   <div class="container-fluid">
+     <div class="col-6 col-md-3 placeholder">
+       <img class="img-responsive img-circle" src="{% static 'Imagens/Desenvolvedores/Rodrigo.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+       <div class="col-6 col-md-9">
+         <h4 align="center">Rodrigo Oliveira</h4>
+       </div>
+     </div>
+
+     <div class="col-md-9 bs-callout bs-callout-danger">
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense.</p>
+     </div>
+   </div>
+
+   <div class="container-fluid">
+     <div class="col-6 col-md-3 placeholder">
+       <img class="img-responsive img-circle" src="{% static 'Imagens/Desenvolvedores/Tobias.jpg' %}" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+       <div class="col-6 col-md-9">
+         <h4 align="center">Tobias Garbelini</h4>
+       </div>
+     </div>
+
+     <div class="col-md-9 bs-callout bs-callout-danger">
+       <p class="lead">Graduando em Sistemas de Informação no Instituto Federal Fluminense.</p>
      </div>
    </div>
 

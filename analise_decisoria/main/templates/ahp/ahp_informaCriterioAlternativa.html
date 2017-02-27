@@ -5,6 +5,20 @@
 {% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
   <br></br>
   <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+
+    <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-12">
+        <div class="panel panel-success" >
+            <div class="panel-heading">
+                <div class="panel-title"><b>Foco Principal:</b></div>
+                <div class="form-group">
+                    <label for="firstname" class="col-md-3 control-label">{{ focoPrincipal }}</label>
+                    <div class="col-md-6">
+                      <input type="hidden" name="focoPrincipal" value="{{ focoPrincipal }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
       <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
           <div class="panel panel-success" >
               <div class="panel-heading">
@@ -12,12 +26,8 @@
                   <div class="form-group">
                     {% for i in "x"|rjust:qtdeCriterio %}
                       <label for="firstname" class="col-md-3 control-label">Critério {{ forloop.counter }}</label>
-                      <div class="col-md-6">
+                      <div class="col-md-9">
                         <input required  style="width:300px" class="form-control" name="Criterio{{ forloop.counter }} " placeholder="Informe o Criterio">
-                      </div>
-
-                      <div class="col-md-3">
-                        <input required type="number" style="width:80px" min="0.01" max="10" class="form-control" name="PesoCriterio{{ forloop.counter }} " placeholder="Peso" step="0.01">
                       </div>
 
                       <br></br>
@@ -44,7 +54,7 @@
           </div>
       </div>
 
-      <div class="mainbox col-md-6">
+      <div class="mainbox col-md-12">
         <button class="btn btn-lg btn-primary btn-success" type="submit">Confirmar</button>
         <a class="btn btn-lg btn-primary btn-danger" href="\">Cancelar</a>
       </div>
