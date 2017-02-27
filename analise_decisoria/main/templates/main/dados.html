@@ -9,9 +9,10 @@
                     <div class="panel-title"><b>Informe os dados:</b></div>
                     <div style="float:right; font-size: 80%; position: relative; top:-10px"></div>
 
-                    {% for dado in dados %}
-                      <li>{{ dado }}</li>
+                    {% for dado in dados[] %}
+                      <li>{{ dado.0 }}</li>
                     {% endfor %}
+                    <h1>{{ nLinhas }}</h1>
                 </div>
         </div>
       </div>

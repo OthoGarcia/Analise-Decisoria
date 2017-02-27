@@ -85,4 +85,76 @@ def csv_reader(request):
     """
     file = request.FILES['file']
     data = [row for row in csv.reader(file.read().splitlines())]
-    return render(request,'main/dados.html', {'dados': data})
+    alternativa = []
+    criterios = []
+    pesos = []
+    sinal = []
+    tabela= []
+    for i in range(len(data)-2):
+        if i != 0 :
+            alternativa.append(data[i][0])
+    for i in range(1,len(data[0])):
+        pesos.append(data[len(data)-2][i])
+        criterios.append(data[0][i])
+        sinal.append(data[len(data)-1][i])
+    for i in range(1,len(data)-2):
+        linha=[]
+        if i != 0 :
+            for j in range(1,len(data[0])):
+                linha.append(data[i][j])
+            tabela.append(linha)
+    teste = len(tabela[0])
+    mCon = matrizConcordanciaI(alternativa, tabela, len(tabela), len(tabela[0]), pesos)
+    mDes = matrizDiscordanciaI(alternativa,tabela, len(tabela),  len(tabela[0]))
+    return render(request,'main/dados.html', {'dados': alternativa, 'nLinhas': len(tabela[0])-1})
+
+
+def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
+
+	somaPesos = 0
+	mConcordancia = []
+
+	for x in range(len(vetorPesos)):
+		somaPesos += float(vetorPesos[x].replace(',','.'))
+
+
+	for i in range(nLinhas):
+		linha = []
+		for j in range(len(tabela[i])):
+
+			somatorioW = 0
+			for y in range(nColunas):
+				if tabela[i][y] >= tabela[j][y]:
+					somatorioW += float(vetorPesos[y].replace(',','.'))
+			result = 1.0/somaPesos * somatorioW
+			linha.append(round(result, 2))
+
+		mConcordancia.append(linha)
+	return mConcordancia
+
+def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
+	vetorDiferencas = []
+
+	for i in range(nLinhas):
+		valoresCriterio = []
+		for j in range(len(tabela[i])):
+			valoresCriterio.append(int(tabela[j][i]))
+		valorMin = min(valoresCriterio)
+		valorMax = max(valoresCriterio)
+		result = valorMax - valorMin
+		vetorDiferencas.append(result)
+
+
+	mDiscordancia = []
+
+	for i in range(nLinhas):
+		linha = []
+		for j in range(len(tabela[i])):
+			vetorIndices = []
+			for y in range(nColunas):
+				vResultante = (float(tabela[j][y]) - float(tabela[i][y]))/vetorDiferencas[y]
+				vetorIndices.append(round(vResultante, 2))
+			linha.append(max(vetorIndices))
+		mDiscordancia.append(linha)
+		print mDiscordancia[i], cidades[i]
+	return mDiscordancia
