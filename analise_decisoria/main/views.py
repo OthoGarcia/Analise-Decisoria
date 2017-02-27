@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
-from .forms import captura_entrada_form, UploadFileForm
-from django.shortcuts import render_to_response
+from django.shortcuts import render, redirect, render_to_response
+from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm
 import csv
+
 
 # Create your views here.
 def menu_principal(request):
@@ -19,12 +19,21 @@ def sobre(request):
 def ahp_insert_valores(request):
     return render(request, 'ahp/ahp_insert_valores.html', {})
 
+def ahp_resultado(request):
+    resultado=request.POST['focoPrincipal']
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado})
+
+def ahp_foco_principal(request):
+    return render(request, 'ahp/ahp_foco_principal.html', {'form': FocoPrincipal_Form()})
+
 def qtdeCriterioAlternativa (request):
-    if request.method == 'POST':
-        formCapEntra  = captura_entrada_form(request.POST)
+    if request.method   == 'POST':
+        formCapEntra     = captura_entrada_form(request.POST)
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
         if formCapEntra.is_valid():
-            formCapEntra.save()
-            return redirect('sobre')
+            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
         else:
 			return render(request, 'main/qtdeCriterioAlternativa.html',{'form': form})
     else:
