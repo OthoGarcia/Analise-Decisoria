@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, render_to_response
-from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm, Criterio_AHP_Form
+from .forms import captura_entrada_form, FocoPrincipal_Form, UploadFileForm, captura_entrada_AHP_Form
 import csv
 from django.template.context_processors import csrf
 
@@ -17,17 +17,22 @@ def sobre(request):
     return render(request, 'main/sobre.html', {})
 
 def ahp_insert_valores(request):
-    return render(request, 'ahp/ahp_insert_valores.html', {})
+    if request.method == 'POST':
+        formCapEntra     = captura_entrada_AHP_Form(request.POST)
+        focoPrincipal    = request.POST['focoPrincipal']
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
+        if formCapEntra.is_valid():
+            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
+        else:
+            return render(request, 'ahp/ahp_insert_valores.html',{'form': formCapEntra})
+    else:
+        return render(request, 'ahp/ahp_insert_valores.html',{'form': captura_entrada_AHP_Form()})
 
 def ahp_resultado(request):
     resultado=request.POST['focoPrincipal']
     return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado})
-
-def ahp_foco_principal(request):
-    return render(request, 'ahp/ahp_foco_principal.html', {'form': FocoPrincipal_Form()})
-
-def ahp_foco_principal_test(request):
-    return render(request, 'ahp/ahp_foco_principal_test.html', {'form': FocoPrincipal_Form()})
 
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':

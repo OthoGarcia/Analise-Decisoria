@@ -16,3 +16,8 @@ class Criterio_AHP_Form(forms.Form):
 
 class Alternativa_AHP_Form(forms.Form):
     alternativa = forms.CharField(label='Alternativa', max_length=100)
+
+class captura_entrada_AHP_Form(forms.Form):
+    qtdeCriterio    = forms.IntegerField()
+    qtdeAlternativa = forms.IntegerField()
+    focoPrincipal = forms.CharField(max_length=100)
