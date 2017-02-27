@@ -10,8 +10,7 @@
 <!-- Jumbotron -->
    <div class="jumbotron">
      <h1>Quem Somos?!</h1>
-     <p class="lead">Graduandos do sétimo período de sistemas de informação, que através da disciplina de Tópicos Avançados desenvolveram um site para o auxílio de tomadas de decisões.</p>
-     <p class="lead">Utilizando métodos das escolas <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">Francesa</a> e <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">Americana</a> para o processamento dos dados. </p>
+     <p class="lead">Graduandos do curso de Sistemas de Informação, que através da disciplina de Tópicos Avançados desenvolveram este site para o auxílio de tomadas de decisões utilizando métodos da escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">Francesa</a> e <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">Americana</a> para o processamento dos dados.</p>
    </div>
 
    <div class="col-md-12 col-md-offset-3">
@@ -23,44 +22,44 @@
 
    <div class="jumbotron col-md-12" id="Francesa">
      <h1>O Projeto! <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>
-     <p class="lead">Na escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">francesa</a> foram utilizados os métodos de Electre I, Electre III, Electre Tri, Soft Electre Tri. </p>
-     <p class="lead">Na escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">americana</a> foi utilizado o método AHP.</p>
+     <p class="lead">Utilizando um algoritmo oferecemos opções para auxiliar o usuário na tomada de decisões fazendo uso dos métodos da escola  <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">Francesa</a> e <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">Americana</a>.</p>
+     <p class="lead"> Na escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Francesa">Francesa</a> foram utilizados os métodos <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#ElectreI">Electre I</a>, <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#ElectreIII">Electre III</a>, <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#ElectreTri">Electre Tri</a> e <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#SoftElectreTri">Soft Electre Tri</a>.</p>
+     <p class="lead">Na escola <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#Americana">Americana</a> foi utilizado o método <a data-scroll data-options='{ "easing": "easeInQuad" }' href="#AHP">AHP</a>.</p>
    </div>
 
    <h1>Escola Francesa <img align='middle' width='50' height='50px' src="{% static 'Imagens/franca.png' %}" alt="ds"></h1>
    <div class="panel panel-primary" id="Francesa" ></div>
 
    <div class="col-md-3">
-     <h1 class="text-primary">Electre I</h1>
+     <h1 class="text-primary" id="ElectreI">Electre I</h1>
    </div>
 
    <div class="col-md-9 bs-callout bs-callout-primary">
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+     <p class="lead">O Electre I foi projetada para tratar os problemas de seleção por meio de relações de sobreclassificação a partir de índices comparação entre  pares. Por meio  dessa versão, dentre tantas alternativas, pode-se retirar a melhor, diante da atuação nos critérios selecionados. Esse método utiliza pesos para ordenar a importância dos critérios por Infante, Mendonça e Valle (2014).</p>
    </div>
 
    <div class="col-md-3">
-     <h1 class="text-primary">Electre III</h1>
+     <h1 class="text-primary" id="ElectreIII">Electre III</h1>
    </div>
 
    <div class="col-md-9 bs-callout bs-callout-primary">
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+     <p class="lead"> O Electre III tem por finalidade ordenar alternativas, como a versão II. No entanto, nessa versão, Roy (1978) incorporou a metodologia Fuzzy na construção do cálculo da ordenação de alternativas, permitindo a criação de pseudocritérios. A abordagem Fuzzy dessa versão permite a incorporação das imprecisões e incertezas do processo de tomada de decisões, fixando os limiares de preferência e indiferença. A ordenação de alternativas da melhor para a pior é conseguida por meio da introdução de ponderações nos critérios por Infante, Mendonça e Valle (2014).</p>
    </div>
 
    <div class="col-md-3">
-     <h1 class="text-primary">Electre Tri</h1>
+     <h1 class="text-primary" id="ElectreTri">Electre Tri</h1>
    </div>
 
    <div class="col-md-9 bs-callout bs-callout-primary">
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+     <p class="lead">O Electre TRI tem como objetivo a classificação de alternativas, no entanto não as ordena, como pode ser visto nos estudos realizados por Figueira et al. (2005),  Almeida-Dias, Figueira e Roy (2010) e Brito, Almeida e Mota (2010), nos quais se realizam estudos na área de reprodução assistida, ações  referenciais e gás natural, respectivamente por Infante, Mendonça e Valle (2014).</p>
    </div>
 
    <div class="col-md-3">
-     <h1 class="text-primary">Soft Electre Tri</h1>
+     <h1 class="text-primary" id="SoftElectreTri">Soft Electre Tri</h1>
    </div>
 
    <div class="col-md-9 bs-callout bs-callout-primary" id="Americana">
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>
    </div>
 
 
@@ -68,11 +67,11 @@
    <div class="panel panel-success"></div>
 
    <div class="col-md-3">
-     <h1 class="text-success">AHP</h1>
+     <h1 class="text-success" id="AHP">AHP</h1>
    </div>
 
    <div class="col-md-9 bs-callout bs-callout-success">
-     <p class="lead">Utilizando métodos para tomadas de decisão das escolas francesas e americana para desenvolver o algoritmo oferecendo opções para o usuário para a tomada de decisões.</p>>
+     <p class="lead">Decompõe e sintetisa as relações entre os critérios até que se chegue a uma priorização dos seus indicadores, aproximando-se de uma melhor resposta de  medição única de desempenho (Saaty, 1991).</p>
    </div>
 
    <h1 id="Desenvolvedores">Desenvolvedores <img align='middle' width='50' height='50px' src="{% static 'Imagens/IconeMascote.png' %}" alt="ds"></h1>
