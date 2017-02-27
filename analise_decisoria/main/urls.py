@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^main/sobre/$', views.sobre, name='sobre'),
     url(r'^ahp/ahp/$', views.ahp_insert_valores, name='ahp_insert_valores'),
     url(r'^main/qtdeCriterioAlternativa/$', views.qtdeCriterioAlternativa, name='qtdeCriterioAlternativa'),
+    url(r'^main/arquivo/$', views.upload_file, name='inserirArquivo'),
+    url(r'^main/dados/$', views.csv_reader, name='dados'),
 ]
