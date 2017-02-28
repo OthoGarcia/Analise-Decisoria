@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, render_to_response
-from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form
+from django import forms
+from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form, Criterio_AHP_Form, Alternativa_AHP_Form
 import csv
 from django.template.context_processors import csrf
+from django.forms import formset_factory
 
 # Create your views here.
 def menu_principal(request):
@@ -17,23 +19,22 @@ def sobre(request):
     return render(request, 'main/sobre.html', {})
 
 def ahp_informaCriterioAlternativa(request):
-    resultado=request.POST['focoPrincipal']
-    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado} )
-
-
-"""def ahp_insert_valores(request):
+    CriterioFormSet    = formset_factory(Criterio_AHP_Form)
+    AlternativaFormSet = formset_factory(Alternativa_AHP_Form)
     if request.method == 'POST':
-        formCapEntra     = captura_entrada_AHP_Form(request.POST)
-        focoPrincipal    = request.POST['focoPrincipal']
-        qtdeAlternativa  = request.POST['qtdeAlternativa']
-        qtdeCriterio     = request.POST['qtdeCriterio']
-
-        if formCapEntra.is_valid():
-            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'focoPrincipal': focoPrincipal, 'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
+        criterioFormSet    = CriterioFormSet(request.POST, prefix='Criterio')
+        alternativaFormSet = AlternativaFormSet(request.POST, prefix='Alternativa')
+        if criterioFormSet.is_valid() and alternativaFormSet.is_valid():
+            resultado='Funcionou!'
+            return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado} )
         else:
-            return render(request, 'ahp/ahp_insert_valores.html',{'form': formCapEntra})
-    else:
-        return render(request, 'ahp/ahp_insert_valores.html',{'form': captura_entrada_AHP_Form()})"""
+            criterioFormSet    = CriterioFormSet(prefix='Criterio')
+            alternativaFormSet = AlternativaFormSet(prefix='Alternativa')
+            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
+
+
+
+
 def ahp_insert_valores(request):
     if request.method == 'POST':
         formCapEntra     = captura_entrada_AHP_Form(request.POST)
@@ -41,12 +42,10 @@ def ahp_insert_valores(request):
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
 
-        c={}
-        for i in range(qtdeCriterio):
-            c['crt'.i]=forms.CharField(max_length=100)
-            """ CriterioAlternativa_Form(c)"""
         if formCapEntra.is_valid():
-            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'focoPrincipal': focoPrincipal, 'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
+            criterioFormSet    = formset_factory(Criterio_AHP_Form, extra=int(qtdeCriterio))
+            alternativaFormSet = formset_factory(Alternativa_AHP_Form, extra=int(qtdeAlternativa))
+            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
         else:
             return render(request, 'ahp/ahp_insert_valores.html',{'form': formCapEntra})
     else:
