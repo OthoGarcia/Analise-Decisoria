@@ -1,9 +1,17 @@
 from django import forms
-from django.db import models
 
 class captura_entrada_form(forms.Form):
-    qtdeCriterio    = forms.IntegerField(min_value=2, max_value=99)
-    qtdeAlternativa = forms.IntegerField(min_value=2, max_value=99)
+    qtdeCriterio    = forms.IntegerField(required=True, min_value=2, max_value=99)
+    qtdeAlternativa = forms.IntegerField(required=True, min_value=2, max_value=99)
+
+class montaVetorCriterio(forms.Form):
+    criterio    = forms.CharField(required=True, max_length=100)
+
+class montaVetorAlternativa(forms.Form):
+    alternativa = forms.CharField(required=True, max_length=100)
+
+class montaVetorPeso(forms.Form):
+    pesos = forms.FloatField(required=True, min_value=0.1, max_value=1)
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)

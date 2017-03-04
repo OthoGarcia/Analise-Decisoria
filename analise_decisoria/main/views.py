@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, render_to_response
 from django import forms
-from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form, Criterio_AHP_Form, Alternativa_AHP_Form
+from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form, Criterio_AHP_Form, Alternativa_AHP_Form, montaVetorCriterio, montaVetorAlternativa, montaVetorPeso
 import csv
 from django.template.context_processors import csrf
 from django.forms import formset_factory
@@ -34,7 +34,19 @@ def ahp_informaCriterioAlternativa(request):
             return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
 
 
-
+def informaCriterioAlternativa(request):
+    CriterioFormSet    = formset_factory(montaVetorCriterio)
+    AlternativaFormSet = formset_factory(montaVetorAlternativa)
+    if request.method == 'POST':
+        criterioFormSet    = CriterioFormSet(request.POST, prefix='Criterio')
+        alternativaFormSet = AlternativaFormSet(request.POST, prefix='Alternativa')
+        if criterioFormSet.is_valid() and alternativaFormSet.is_valid():
+            resultado='Funcionou!'
+            return render(request, 'main/resultado_matriz.html', {'resultado': resultado} )
+        else:
+            criterioFormSet    = CriterioFormSet(prefix='Criterio')
+            alternativaFormSet = AlternativaFormSet(prefix='Alternativa')
+            return render(request, 'main/informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
 
 def ahp_insert_valores(request):
     if request.method == 'POST':
@@ -63,7 +75,10 @@ def qtdeCriterioAlternativa (request):
         qtdeCriterio     = request.POST['qtdeCriterio']
 
         if formCapEntra.is_valid():
-            return render(request, 'main/informaCriterioAlternativa.html', {'qtdeCriterio': qtdeCriterio, 'qtdeAlternativa' : qtdeAlternativa } )
+            criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
+            alternativaFormSet = formset_factory(montaVetorAlternativa, extra=int(qtdeAlternativa))
+            pesoFormSet        = formset_factory(montaVetorPeso, extra=int(qtdeCriterio))
+            return render(request, 'main/informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet, 'pesoFormSet' : pesoFormSet } )
         else:
 			return render(request, 'main/qtdeCriterioAlternativa.html',{'form': form})
     else:
