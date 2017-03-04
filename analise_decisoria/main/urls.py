@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^main/qtdeCriterioAlternativa/$', views.qtdeCriterioAlternativa, name='qtdeCriterioAlternativa'),
     url(r'^main/arquivo/$', views.upload_file, name='inserirArquivo'),
     url(r'^main/dados/$', views.csv_reader, name='dados'),
+    url(r'^main/alternativas/$', views.getAlternativas, name='getAlternativas'),
 ]

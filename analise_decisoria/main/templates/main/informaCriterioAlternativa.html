@@ -4,7 +4,7 @@
 
 {% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
   <br></br>
-  <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+  <form id="loginform" class="form-horizontal" role="form" action="{% url 'getAlternativas' %}" method="POST" >  {% csrf_token %}
       <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
           <div class="panel panel-success" >
               <div class="panel-heading">
@@ -28,7 +28,7 @@
           </div>
       </div>
 
-      <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+
           <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
               <div class="panel panel-success" >
                   <div class="panel-heading">

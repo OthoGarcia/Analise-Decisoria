@@ -84,6 +84,12 @@ def qtdeCriterioAlternativa (request):
     else:
 		return render(request, 'main/qtdeCriterioAlternativa.html',{'form': captura_entrada_form()})
 
+def getAlternativas (request):
+    alternativas= []
+    for i in range(0,4):
+        alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
+    print alternativas
+    return render(request, 'main/teste.html')
 
 def upload_file(request):
     if request.method == 'POST':
