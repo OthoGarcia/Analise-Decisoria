@@ -5,38 +5,56 @@
 {% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
   <br></br>
   <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
-      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
           <div class="panel panel-success" >
               <div class="panel-heading">
                   <div class="panel-title"><b>Informe os Critérios:</b></div>
                   <div class="form-group">
-                    {% for i in "x"|rjust:qtdeCriterio %}
-                      <label for="firstname" class="col-md-3 control-label">Critério {{ forloop.counter }}</label>
-                      <div class="col-md-6">
-                        <input required  style="width:300px" class="form-control" name="Criterio{{ forloop.counter }} " placeholder="Informe o Criterio">
-                      </div>
+                    {{ criterioFormSet.montaVetorCriterio }}
+                    {{ pesoFormSet.montaVetorPeso }}
 
-                      <div class="col-md-3">
-                        <input required type="number" style="width:80px" min="0.01" max="10" class="form-control" name="PesoCriterio{{ forloop.counter }} " placeholder="Peso" step="0.01">
+                    {% for form in criterioFormSet %}
+
+                      <div class="col-md-12">
+                        {{ form }}
                       </div>
 
                       <br></br>
                     {% endfor %}
+
                   </div>
               </div>
           </div>
       </div>
 
-      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6">
+      <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+          <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
+              <div class="panel panel-success" >
+                  <div class="panel-heading">
+                      <div class="panel-title"><b>Informe os pesos dos Critérios:</b></div>
+                      <div class="form-group">
+                        {{ pesoFormSet.montaVetorPeso }}
+                        {% for form in pesoFormSet %}
+
+                          <div class="col-md-12">
+                            {{ form }}
+                          </div>
+
+                          <br></br>
+                        {% endfor %}
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
           <div class="panel panel-success" >
               <div class="panel-heading">
                   <div class="panel-title"><b>Informe as Alternativas:</b></div>
                     <div class="form-group">
-                  {% for i in "x"|rjust:qtdeAlternativa %}
-                      <label for="firstname" class="col-md-3 control-label">Alternativa {{ forloop.counter }}</label>
-                      <div class="col-md-9">
-                          <input required class="form-control" name="Alternativa{{ forloop.counter }} " placeholder="Informe a Alternativa">
-                      </div>
+                    {{ criterioFormSet.montaVetorCriterio }}
+                    {% for form in alternativaFormSet %}
+                      {{ form }}
                       <br></br>
                   {% endfor %}
                     </div>
