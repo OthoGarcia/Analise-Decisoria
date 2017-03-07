@@ -20,53 +20,29 @@ def sobre(request):
     return render(request, 'main/sobre.html', {})
 
 def ahp_informaCriterioAlternativa(request):
-    CriterioFormSet    = formset_factory(Criterio_AHP_Form)
-    AlternativaFormSet = formset_factory(Alternativa_AHP_Form)
-    if request.method == 'POST':
-        criterioFormSet    = CriterioFormSet(request.POST, prefix='Criterio')
-        alternativaFormSet = AlternativaFormSet(request.POST, prefix='Alternativa')
-        if criterioFormSet.is_valid() and alternativaFormSet.is_valid():
-            resultado='Funcionou!'
-            return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado} )
-        else:
-            criterioFormSet    = CriterioFormSet(prefix='Criterio')
-            alternativaFormSet = AlternativaFormSet(prefix='Alternativa')
-            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
-
-
-def informaCriterioAlternativa(request):
-    CriterioFormSet    = formset_factory(montaVetorCriterio)
-    AlternativaFormSet = formset_factory(montaVetorAlternativa)
-    if request.method == 'POST':
-        criterioFormSet    = CriterioFormSet(request.POST, prefix='Criterio')
-        alternativaFormSet = AlternativaFormSet(request.POST, prefix='Alternativa')
-        if criterioFormSet.is_valid() and alternativaFormSet.is_valid():
-            resultado='Funcionou!'
-            return render(request, 'main/resultado_matriz.html', {'resultado': resultado} )
-        else:
-            criterioFormSet    = CriterioFormSet(prefix='Criterio')
-            alternativaFormSet = AlternativaFormSet(prefix='Alternativa')
-            return render(request, 'main/informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
+    qtdeAlternativa  = request.POST['qtdeAlternativa']
+    qtdeCriterio     = request.POST['qtdeCriterio']
+    CriterioFormSet    = formset_factory(Criterio_AHP_Form, extra=int(qtdeCriterio))
+    AlternativaFormSet = formset_factory(Alternativa_AHP_Form, extra=int(qtdeAlternativa))
+    criterioFormSet    = CriterioFormSet(prefix='Criterio')
+    alternativaFormSet = AlternativaFormSet(prefix='Alternativa')
+    return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
 
 def ahp_insert_valores(request):
     if request.method == 'POST':
         formCapEntra     = captura_entrada_AHP_Form(request.POST)
-        focoPrincipal    = request.POST['focoPrincipal']
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
 
         if formCapEntra.is_valid():
-            criterioFormSet    = formset_factory(Criterio_AHP_Form, extra=int(qtdeCriterio))
-            alternativaFormSet = formset_factory(Alternativa_AHP_Form, extra=int(qtdeAlternativa))
-            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet } )
+            return render(request, 'ahp/ahp_informaCriterioAlternativa.html', {} )
         else:
             return render(request, 'ahp/ahp_insert_valores.html',{'form': formCapEntra})
     else:
         return render(request, 'ahp/ahp_insert_valores.html',{'form': captura_entrada_AHP_Form()})
 
 def ahp_resultado(request):
-    resultado=request.POST['focoPrincipal']
-    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado})
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': request.POST.lists()})
 
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':
