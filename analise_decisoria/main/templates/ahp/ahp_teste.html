@@ -1,0 +1,54 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<br></br>
+<div class="container-fluid">
+ <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+   <div class="panel panel-success" >
+
+     <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+      <!-- Para poder exibir o que foi submetido. -->
+      {% csrf_token %} <!-- Para poder exibir o que foi submetido. -->
+      <div class="input_fields_wrap">
+        <button class="add_field_button">Add More Fields</button>
+        <div>
+      {{ criterio_formset.as_p }}
+    </div>
+    </div>
+  </form>
+   </div>
+   </div>
+   <!-- <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script> -->
+   <script type="text/javascript">
+
+   $(document).ready(function() {
+     var max_fields = 10; //maximum input boxes allowed
+     var wrapper = $(".input_fields_wrap"); //Fields wrapper
+     var add_button = $(".add_field_button"); //Add button ID
+
+     var x = 1; //initlal text box count
+     $(add_button).click(function(e) { //on add input button click
+       e.preventDefault();
+       var length = wrapper.find("p").length;
+
+       if (x < max_fields) { //max input box allowed
+         x++; //text box increment
+         $(wrapper).append('<p><label for="id_criterio_form-' + (length) + '-criterio">Criterio:</label> <input id="id_criterio_form-' + (length) + '-criterio" maxlength="100" name="criterio_form-' + (length) + '-criterio" type="text" /><a href="#" class="remove_field">Remove</a></p>'); //add input box
+       }
+       //Fazendo com que cada uma escreva seu name
+       wrapper.find("input:text").each(function() {
+         $(this).val($(this).attr('name'))
+       });
+     });
+
+     $(wrapper).on("click", ".remove_field", function(e) { //user click on remove text
+       e.preventDefault();
+       $(this).parent('p').remove();
+       x--;
+     })
+
+   });
+
+   </script>
+   <script type="text/javascript" src="{% static 'js/forms_ahp.js' %}"></script>
+{% endblock %}

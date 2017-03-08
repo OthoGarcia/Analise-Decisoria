@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, render_to_response
 from django import forms
-from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form, Criterio_AHP_Form, Alternativa_AHP_Form, montaVetorCriterio, montaVetorAlternativa, montaVetorPeso
+from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form, Criterio_AHP_Form, Alternativa_AHP_Form, montaVetorCriterio, montaVetorAlternativa, montaVetorPeso, CriterioFormSet
 import csv
 from django.template.context_processors import csrf
-from django.forms import formset_factory
 import itertools
 
 # Create your views here.
@@ -43,6 +42,9 @@ def ahp_insert_valores(request):
 
 def ahp_resultado(request):
     return render(request, 'ahp/ahp_resultado.html', {'resultado': request.POST.lists()})
+
+def teste(request):
+    return render(request, 'ahp/ahp_teste.html', {'criterio_formset': CriterioFormSet(prefix='criterio_form')})
 
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':

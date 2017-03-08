@@ -1,5 +1,5 @@
 from django import forms
-
+from django.forms import formsets
 class captura_entrada_form(forms.Form):
     qtdeCriterio    = forms.IntegerField(required=True, min_value=2, max_value=99)
     qtdeAlternativa = forms.IntegerField(required=True, min_value=2, max_value=99)
@@ -19,6 +19,8 @@ class UploadFileForm(forms.Form):
 
 class Criterio_AHP_Form(forms.Form):
     criterio = forms.CharField(label='Criterio', max_length=100)
+
+CriterioFormSet = formsets.formset_factory(Criterio_AHP_Form, min_num=1, max_num=10)
 
 class Alternativa_AHP_Form(forms.Form):
     alternativa = forms.CharField(label='Alternativa', max_length=100)
