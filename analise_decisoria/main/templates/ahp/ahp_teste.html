@@ -6,7 +6,7 @@
  <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
    <div class="panel panel-success" >
 
-     <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+     <form id="loginform" class="form-horizontal" role="form" action="{% url 'ahp_resultado' %}" method="POST" >
       <!-- Para poder exibir o que foi submetido. -->
       {% csrf_token %} <!-- Para poder exibir o que foi submetido. -->
       <div class="input_fields_wrap">
@@ -14,6 +14,10 @@
         <div>
       {{ criterio_formset.as_p }}
     </div>
+    </div>
+    <div class="mainbox col-md-12">
+      <button class="btn btn-lg btn-primary btn-success" type="submit">Confirmar</button>
+      <a class="btn btn-lg btn-primary btn-danger" href="\">Cancelar</a>
     </div>
   </form>
    </div>
@@ -26,18 +30,18 @@
      var wrapper = $(".input_fields_wrap"); //Fields wrapper
      var add_button = $(".add_field_button"); //Add button ID
 
-     var x = 1; //initlal text box count
+     var x = 2; //initlal text box count
      $(add_button).click(function(e) { //on add input button click
        e.preventDefault();
        var length = wrapper.find("p").length;
 
        if (x < max_fields) { //max input box allowed
          x++; //text box increment
-         $(wrapper).append('<p><label for="id_criterio_form-' + (length) + '-criterio">Criterio:</label> <input id="id_criterio_form-' + (length) + '-criterio" maxlength="100" name="criterio_form-' + (length) + '-criterio" type="text" /><a href="#" class="remove_field">Remove</a></p>'); //add input box
+         $(wrapper).append('<p><label for="id_criterio_form-' + (length-1) + '-criterio">Criterio:</label> <input id="id_criterio_form-' + (length) + '-criterio" maxlength="100" name="criterio_form-' + (length) + '-criterio" type="text" /><a href="#" class="remove_field">Remove</a></p>'); //add input box
        }
-       //Fazendo com que cada uma escreva seu name
-       wrapper.find("input:text").each(function() {
-         $(this).val($(this).attr('name'))
+
+       wrapper.find("#id_criterio_form-TOTAL_FORMS").each(function() {
+         $(this).val(wrapper.find("p").length);
        });
      });
 
@@ -45,7 +49,11 @@
        e.preventDefault();
        $(this).parent('p').remove();
        x--;
-     })
+
+              wrapper.find("#id_criterio_form-TOTAL_FORMS").each(function() {
+                $(this).val(wrapper.find("p").length);
+              });
+     });
 
    });
 

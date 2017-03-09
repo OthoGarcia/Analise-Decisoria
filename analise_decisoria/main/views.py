@@ -41,9 +41,26 @@ def ahp_insert_valores(request):
         return render(request, 'ahp/ahp_insert_valores.html',{'form': captura_entrada_AHP_Form()})
 
 def ahp_resultado(request):
-    return render(request, 'ahp/ahp_resultado.html', {'resultado': request.POST.lists()})
+    if request.method == 'POST':
+        criterio_formset = CriterioFormSet(request.POST, prefix='criterio_form')
+        if criterio_formset.is_valid():
+            resultado={}
+            x=1
+            for criin in criterio_formset:
+                resultado[str(x)]=criin['criterio']
+                x+=1
+            return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado})
+        else:
+            return render(request, 'ahp/ahp_teste.html', {'criterio_formset': criterio_formset})
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': request.POST.keys()})
 
 def teste(request):
+    if request.method == 'POST':
+        criterio_formset = CriterioFormSet(request.POST, prefix='criterio_form')
+        if criterio_formset.is_valid():
+            return render(request, 'ahp/ahp_resultado.html', {'resultado': criterio_formset.keys()})
+        else:
+            return render(request, 'ahp/ahp_teste.html', {'criterio_formset': criterio_formset})
     return render(request, 'ahp/ahp_teste.html', {'criterio_formset': CriterioFormSet(prefix='criterio_form')})
 
 def qtdeCriterioAlternativa (request):
