@@ -3,6 +3,7 @@ from django import forms
 from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_Form, Criterio_AHP_Form, Alternativa_AHP_Form, montaVetorCriterio, montaVetorAlternativa, montaVetorPeso, CriterioFormSet
 import csv
 from django.template.context_processors import csrf
+from django.forms import formset_factory
 import itertools
 
 # Create your views here.
@@ -68,6 +69,9 @@ def qtdeCriterioAlternativa (request):
         formCapEntra     = captura_entrada_form(request.POST)
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
+        teste            = request.POST.get('teste')
+
+        print "TESTE " + str(teste)
 
         if formCapEntra.is_valid():
             criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
