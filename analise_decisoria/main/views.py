@@ -81,18 +81,22 @@ def qtdeCriterioAlternativa (request):
 		return render(request, 'main/qtdeCriterioAlternativa.html',{'form': captura_entrada_form()})
 
 def getAlternativas (request):
-    alternativas    = []
-    criterios       = []
-    qtdeAlternativa = request.POST['alternativa']
-    qtdeCriterio    = request.POST['criterio']
+    if request.method   == 'POST':
+        alternativas    = []
+        criterios       = []
+        qtdeAlternativa = request.POST['alternativa']
+        qtdeCriterio    = request.POST['criterio']
 
-    for i in range(0,int(qtdeAlternativa)):
-        alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
+        for i in range(0,int(qtdeAlternativa)):
+            alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
 
-    for i in range(0,int(qtdeCriterio)):
-        criterios.append(request.POST['form-'+str(i)+'-criterio'])
+        for i in range(0,int(qtdeCriterio)):
+            criterios.append(request.POST['form-'+str(i)+'-criterio'])
 
-    return render(request, 'main/teste.html')
+        return render(request, 'main/preencheMatriz.html', {'alternativas' : alternativas, 'criterios' : criterios})
+
+    else:
+		return render(request, 'main/informaCriterioAlternativa.html')
 
 def upload_file(request):
     if request.method == 'POST':
