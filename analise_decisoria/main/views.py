@@ -69,25 +69,29 @@ def qtdeCriterioAlternativa (request):
         formCapEntra     = captura_entrada_form(request.POST)
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
-        teste            = request.POST.get('teste')
-
-        print "TESTE " + str(teste)
 
         if formCapEntra.is_valid():
             criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
             alternativaFormSet = formset_factory(montaVetorAlternativa, extra=int(qtdeAlternativa))
             pesoFormSet        = formset_factory(montaVetorPeso, extra=int(qtdeCriterio))
-            return render(request, 'main/informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet, 'pesoFormSet' : pesoFormSet } )
+            return render(request, 'main/informaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet, 'pesoFormSet' : pesoFormSet, 'alternativa' : qtdeAlternativa, 'criterio' : qtdeCriterio } )
         else:
 			return render(request, 'main/qtdeCriterioAlternativa.html',{'form': form})
     else:
 		return render(request, 'main/qtdeCriterioAlternativa.html',{'form': captura_entrada_form()})
 
 def getAlternativas (request):
-    alternativas= []
-    for i in range(0,4):
+    alternativas    = []
+    criterios       = []
+    qtdeAlternativa = request.POST['alternativa']
+    qtdeCriterio    = request.POST['criterio']
+
+    for i in range(0,int(qtdeAlternativa)):
         alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
-    print alternativas
+
+    for i in range(0,int(qtdeCriterio)):
+        criterios.append(request.POST['form-'+str(i)+'-criterio'])
+
     return render(request, 'main/teste.html')
 
 def upload_file(request):
