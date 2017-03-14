@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^main/arquivo/$', views.upload_file, name='inserirArquivo'),
     url(r'^main/dados/$', views.csv_reader, name='dados'),
     url(r'^main/alternativas/$', views.getAlternativas, name='getAlternativas'),
+    url(r'^main/preencheMatriz/$', views.preencheMatriz, name='preencheMatriz'),
 ]

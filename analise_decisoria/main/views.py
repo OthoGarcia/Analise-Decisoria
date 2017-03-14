@@ -98,6 +98,18 @@ def getAlternativas (request):
     else:
 		return render(request, 'main/informaCriterioAlternativa.html')
 
+def preencheMatriz (request):
+
+    tabela = []
+
+    for i in range(1,2):
+        linha=[]
+        for j in range(1,2):
+            linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
+        tabela.append(linha)
+
+    print tabela
+
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
