@@ -102,13 +102,13 @@ def preencheMatriz (request):
 
     tabela = []
 
-    for i in range(1,2):
+    for i in range(2):
         linha=[]
-        for j in range(1,2):
+        for j in range(2):
             linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
         tabela.append(linha)
-
-    print tabela
+        
+    return render(request, 'main/menu_principal.html')
 
 def upload_file(request):
     if request.method == 'POST':
