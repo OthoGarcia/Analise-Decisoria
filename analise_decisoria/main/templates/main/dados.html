@@ -43,7 +43,44 @@
                       {% endfor %}
                     </tr>
                     </table>
-
+                    <br>
+                    <h3>Matriz Concordancia</h3>
+                    <table>
+                      <tr>
+                        <th>Alternativa/Alternativa</th>
+                        {% for alternativa in alternativas %}
+                          <th>{{ alternativa }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in mCon %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:i %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
+                    <br>
+                    <h3>Matriz Discordancia</h3>
+                    <table>
+                      <tr>
+                        <th>Alternativa/Alternativa</th>
+                        {% for alternativa in alternativas %}
+                          <th>{{ alternativa }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in mDes %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:i %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
                 </div>
         </div>
       </div>

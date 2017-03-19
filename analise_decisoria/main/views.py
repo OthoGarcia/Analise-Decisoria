@@ -88,7 +88,6 @@ def getAlternativas (request):
     alternativas= []
     for i in range(0,4):
         alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
-    print alternativas
     return render(request, 'main/teste.html')
 
 def upload_file(request):
@@ -131,46 +130,53 @@ def csv_reader(request):
     teste = len(tabela[0])
     mCon = matrizConcordanciaI(alternativa, tabela, len(tabela), len(tabela[0]), pesos)
     mDes = matrizDiscordanciaI(alternativa,tabela, len(tabela),  len(tabela[0]))
-    mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
+    '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
     kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    '''
     result = []
+    resultCon = []
+    resultDes = []
     for i in range(len(tabela)):
         for j in range(len(tabela[i])+1):
             if j==0:
                 result.append(alternativa[i])
+                resultCon.append(alternativa[i])
+                resultDes.append(alternativa[i])
             else:
                 result.append(tabela[i][j-1])
-    print result
-    return render(request,'main/dados.html', {'alternativas': alternativa, 'criterios': criterios, 'tabela': tabela, 'mCon': mCon, 'i': len(tabela[i])+1 , 'result': result })
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultDes.append('-')
+    return render(request,'main/dados.html', {'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result })
 
 
 def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
-
-	somaPesos = 0
-	mConcordancia = []
-
-	for x in range(len(vetorPesos)):
-		somaPesos += float(vetorPesos[x].replace(',','.'))
-
-
-	for i in range(nLinhas):
-		linha = []
-		for j in range(len(tabela[i])):
-
-			somatorioW = 0
-			for y in range(nColunas):
-				if tabela[i][y] >= tabela[j][y]:
-					somatorioW += float(vetorPesos[y].replace(',','.'))
-			result = 1.0/somaPesos * somatorioW
-			linha.append(round(result, 2))
-
-		mConcordancia.append(linha)
-	return mConcordancia
+    somaPesos = 0
+    mConcordancia = []
+    for x in range(len(vetorPesos)):
+        somaPesos += float(vetorPesos[x].replace(',','.'))
+    for i in range(0,nLinhas):
+        linha = []
+        for j in range(0,nLinhas):
+            if i == j :
+                linha.append(1)
+            else :
+                somatorioW = 0
+                for y in range(nColunas):
+                    if tabela[i][y] >= tabela[j][y]:
+                        somatorioW += float(vetorPesos[y].replace(',','.'))/somaPesos
+                        #print(str(tabela[i][y])+'>'+str(tabela[j][y]))
+                linha.append(somatorioW)
+        mConcordancia.append(linha)
+    return mConcordancia
 
 def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
 	vetorDiferencas = []
 
-	for i in range(nLinhas):
+	for i in range(nLinhas-1):
 		valoresCriterio = []
 		for j in range(len(tabela[i])):
 			valoresCriterio.append(int(tabela[j][i]))
@@ -191,7 +197,6 @@ def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
 				vetorIndices.append(round(vResultante, 2))
 			linha.append(max(vetorIndices))
 		mDiscordancia.append(linha)
-		print mDiscordancia[i], cidades[i]
 	return mDiscordancia
 
 def calculaMveto(mConcordanciaI, mDiscordanciaI, c, d, nLinhas):
