@@ -160,16 +160,21 @@ def csv_reader(request):
         for j in range(len(tabela[i])+1):
             if j==0:
                 result.append(alternativa[i])
+            else:
+                result.append(tabela[i][j-1])
+    for i in range(len(tabela)):
+        for j in range(len(tabela)+1):
+            if j==0:
                 resultCon.append(alternativa[i])
                 resultDes.append(alternativa[i])
             else:
-                result.append(tabela[i][j-1])
                 if (i != j-1):
                     resultCon.append(mCon[i][j-1])
                     resultDes.append(mDes[i][j-1])
                 else:
                     resultCon.append('-')
                     resultDes.append('-')
+
     return render(request,'main/dados.html', {'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result })
 
 
@@ -186,19 +191,21 @@ def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
             else :
                 somatorioW = 0
                 for y in range(nColunas):
-                    if tabela[i][y] >= tabela[j][y]:
+                    if int(tabela[i][y]) >= int(tabela[j][y]):
                         somatorioW += float(vetorPesos[y].replace(',','.'))/somaPesos
-                        #print(str(tabela[i][y])+'>'+str(tabela[j][y]))
-                linha.append(somatorioW)
+                    print('i='+str(i)+'j='+str(j)+'y='+str(y)+str(tabela[i][y])+'>'+str(tabela[j][y]))
+                    print(str(somatorioW))
+                    print(float(vetorPesos[y].replace(',','.'))/somaPesos)
+                print('_____________')
+                linha.append(round(somatorioW, 2))
         mConcordancia.append(linha)
     return mConcordancia
 
 def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
 	vetorDiferencas = []
-
-	for i in range(nLinhas-1):
+	for i in range(0,nLinhas):
 		valoresCriterio = []
-		for j in range(len(tabela[i])):
+		for j in range(0,nColunas):
 			valoresCriterio.append(int(tabela[j][i]))
 		valorMin = min(valoresCriterio)
 		valorMax = max(valoresCriterio)
@@ -208,7 +215,7 @@ def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
 
 	mDiscordancia = []
 
-	for i in range(nLinhas):
+	for i in range(0,nLinhas):
 		linha = []
 		for j in range(len(tabela[i])):
 			vetorIndices = []
