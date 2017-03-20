@@ -36,7 +36,7 @@
                       <tr>
                       {% for item in result %}
                           <td>{{ item }}</td>
-                        {% if forloop.counter|divisibleby:i %}
+                        {% if forloop.counter|divisibleby:iT %}
                           </tr>
                           <tr>
                         {% endif %}
@@ -82,6 +82,31 @@
                     </tr>
                     </table>
                     <br>
+                    <h3>Matriz de Veto</h3>
+                    <table>
+                      <tr>
+                        <th>Alternativa/Alternativa</th>
+                        {% for alternativa in alternativas %}
+                          <th>{{ alternativa }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in mVeto %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:i %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
+                    <br>
+                    <h3>Resultado</h3>
+                    <ol>
+                      {% for item in kernel %}
+                        <li>{{ item }}</li>
+                      {% endfor %}
+                    </ol>
                 </div>
         </div>
       </div>
