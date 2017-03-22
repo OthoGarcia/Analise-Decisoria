@@ -101,6 +101,10 @@ def electreIII_valores (request):
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':
         formCapEntra     = captura_entrada_form(request.POST)
+
+        request.session['qtdeAlternativa']  = request.POST['qtdeAlternativa']
+        request.session['qtdeCriterio']     = request.POST['qtdeCriterio']
+
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
 
@@ -118,14 +122,22 @@ def getAlternativas (request):
     if request.method   == 'POST':
         alternativas    = []
         criterios       = []
+        request.session['pesos']       = []
+        request.session['alternativa'] = []
+        request.session['criterio']    = []
         qtdeAlternativa = request.POST['alternativa']
         qtdeCriterio    = request.POST['criterio']
 
-        for i in range(0,int(qtdeAlternativa)):
+        for i in range(0,int(request.session['qtdeAlternativa'])):
             alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
+            request.session['alternativa'].append(request.POST['form-'+str(i)+'-alternativa'])
 
-        for i in range(0,int(qtdeCriterio)):
+        for i in range(0,int(request.session['qtdeCriterio'])):
             criterios.append(request.POST['form-'+str(i)+'-criterio'])
+            request.session['criterio'].append(request.POST['form-'+str(i)+'-criterio'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            request.session['pesos'].append(request.POST['form-'+str(i)+'-pesos'])
 
         return render(request, 'main/preencheMatriz.html', {'alternativas' : alternativas, 'criterios' : criterios})
 
@@ -135,14 +147,38 @@ def getAlternativas (request):
 def preencheMatriz (request):
 
     tabela = []
+    mCon   = []
+    mDes   = []
 
-    for i in range(1,2):
+    for i in range(int(request.session['qtdeCriterio'])):
         linha=[]
-        for j in range(1,2):
+        for j in range(int(request.session['qtdeAlternativa'])):
             linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
         tabela.append(linha)
 
-    print tabela
+    mCon = matrizConcordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'])
+    mDes = matrizDiscordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]))
+    '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
+    kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    '''
+    result    = []
+    resultCon = []
+    resultDes = []
+    for i in range(len(tabela)):
+        for j in range(len(tabela[i])+1):
+            if j==0:
+                result.append(request.session['alternativa'][i])
+                resultCon.append(request.session['alternativa'][i])
+                resultDes.append(request.session['alternativa'][i])
+            else:
+                result.append(tabela[i][j-1])
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultDes.append('-')
+    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result })
 
 def upload_file(request):
     if request.method == 'POST':
@@ -186,13 +222,18 @@ def csv_reader(request):
     mDes = matrizDiscordanciaI(alternativa,tabela, len(tabela),  len(tabela[0]))
     mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
     kernel = calculaKernel(mVeto, len(tabela), alternativa )
+
     result = []
+    resultCon = []
+    resultDes = []
+    resultMveto = []
     for i in range(len(tabela)):
         for j in range(len(tabela[i])+1):
             if j==0:
                 result.append(alternativa[i])
             else:
                 result.append(tabela[i][j-1])
+
     print result
     return render(request,'main/dados.html', {'alternativas': alternativa, 'criterios': criterios, 'tabela': tabela, 'mCon': mCon, 'i': len(tabela[i])+1 , 'result': result })
 
@@ -298,33 +339,72 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, prefer
             mConcordancia.append(linha)
             print mConcordancia[i], cidades[i]
         return mConcordancia
+    for i in range(len(tabela)):
+        for j in range(len(tabela)+1):
+            if j==0:
+                resultCon.append(alternativa[i])
+                resultDes.append(alternativa[i])
+                resultMveto.append(alternativa[i])
+            else:
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                    resultMveto.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultMveto.append('-')
+                    resultDes.append('-')
+
+    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+2 ,'iT': len(tabela[i])+1,  'result': result })
+
+
+def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
+    somaPesos = 0
+    mConcordancia = []
+    for x in range(len(vetorPesos)):
+        somaPesos += float(vetorPesos[x].replace(',','.'))
+    for i in range(0,nLinhas):
+        linha = []
+        for j in range(0,nLinhas):
+            if i == j :
+                linha.append(1)
+            else :
+                somatorioW = 0
+                for y in range(nColunas):
+                    if int(tabela[i][y]) >= int(tabela[j][y]):
+                        somatorioW += float(vetorPesos[y].replace(',','.'))/somaPesos
+                    '''print('i='+str(i)+'j='+str(j)+'y='+str(y)+str(tabela[i][y])+'>'+str(tabela[j][y]))
+                    print(str(somatorioW))
+                    print(float(vetorPesos[y].replace(',','.'))/somaPesos)'''
+                print('_____________')
+                linha.append(round(somatorioW, 2))
+        mConcordancia.append(linha)
+    return mConcordancia
+
 
 def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
-	vetorDiferencas = []
+    vetorDiferencas = []
+    mDiscordancia = []
+    for i in range(0,nColunas):
+        valoresCriterio = []
+        for j in range(0,nLinhas):
+            valoresCriterio.append(int(tabela[j][i]))
+        valorMin = min(valoresCriterio)
+        valorMax = max(valoresCriterio)
+        result = valorMax - valorMin
+        vetorDiferencas.append(result)
 
-	for i in range(nLinhas):
-		valoresCriterio = []
-		for j in range(len(tabela[i])):
-			valoresCriterio.append(int(tabela[j][i]))
-		valorMin = min(valoresCriterio)
-		valorMax = max(valoresCriterio)
-		result = valorMax - valorMin
-		vetorDiferencas.append(result)
-
-
-	mDiscordancia = []
-
-	for i in range(nLinhas):
-		linha = []
-		for j in range(len(tabela[i])):
-			vetorIndices = []
-			for y in range(nColunas):
-				vResultante = (float(tabela[j][y]) - float(tabela[i][y]))/vetorDiferencas[y]
-				vetorIndices.append(round(vResultante, 2))
-			linha.append(max(vetorIndices))
-		mDiscordancia.append(linha)
-		print mDiscordancia[i], cidades[i]
-	return mDiscordancia
+    for i in range(0,nLinhas):
+        linha = []
+        for j in range(0,nLinhas):
+            vetorIndices = []
+            for y in range(nColunas):
+                vResultante = (float(tabela[i][y]) - float(tabela[j][y]))/vetorDiferencas[y]
+                vetorIndices.append(round(vResultante, 2))
+                print('i='+str(i)+'j='+str(j)+'y='+str(y))
+            linha.append(max(vetorIndices))
+        mDiscordancia.append(linha)
+    return mDiscordancia
 
 
 def matrizDisconcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, preferencia, veto):
