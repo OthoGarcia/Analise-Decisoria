@@ -80,6 +80,82 @@ def electreIII (request):
     else:
         return render(request, 'main/electreIII.html',{'form': captura_entrada_form()})
 
+def getAlternativasIII (request):
+    if request.method   == 'POST':
+        alternativas    = []
+        criterios       = []
+        request.session['pesos']       = []
+        request.session['alternativa'] = []
+        request.session['criterio']    = []
+        qtdeAlternativa = request.POST['alternativa']
+        qtdeCriterio    = request.POST['criterio']
+
+        for i in range(0,int(request.session['qtdeAlternativa'])):
+            alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
+            request.session['alternativa'].append(request.POST['form-'+str(i)+'-alternativa'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            criterios.append(request.POST['form-'+str(i)+'-criterio'])
+            request.session['criterio'].append(request.POST['form-'+str(i)+'-criterio'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            request.session['pesos'].append(request.POST['form-'+str(i)+'-pesos'])
+
+        return render(request, 'main/electreIII_InformaIndice.html')
+
+    else:
+		return render(request, 'main/electreIII_valores.html')
+
+def electreIII_InformaIndice (request):
+    if request.method   == 'POST':
+
+        request.session['concordancia'] = request.POST['concordancia']
+        request.session['discordancia'] = request.POST['discordancia']
+        request.session['preferencia']  = request.POST['preferencia']
+        request.session['indiferenca']  = request.POST['indiferenca']
+        request.session['veto']         = request.POST['veto']
+
+        return render(request, 'main/preencheMatrizIII.html', {'alternativas' : request.session['alternativa'], 'criterios' : request.session['criterio']})
+
+    else:
+		return render(request, 'main/electreIII_valores.html')
+
+def preencheMatrizIII (request):
+
+    tabela = []
+    mCon   = []
+    mDes   = []
+
+    for i in range(int(request.session['qtdeCriterio'])):
+        linha=[]
+        for j in range(int(request.session['qtdeAlternativa'])):
+            linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
+        tabela.append(linha)
+
+    mCon = matrizConcordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'])
+    mDes = matrizDiscordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]))
+    '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
+    kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    '''
+    result    = []
+    resultCon = []
+    resultDes = []
+    for i in range(len(tabela)):
+        for j in range(len(tabela[i])+1):
+            if j==0:
+                result.append(request.session['alternativa'][i])
+                resultCon.append(request.session['alternativa'][i])
+                resultDes.append(request.session['alternativa'][i])
+            else:
+                result.append(tabela[i][j-1])
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultDes.append('-')
+    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
+
 def electreIII_valores (request):
     if request.method   == 'POST':
         riterioFormSet.montaVetorCriterio
@@ -233,9 +309,23 @@ def csv_reader(request):
                 result.append(alternativa[i])
             else:
                 result.append(tabela[i][j-1])
+    for i in range(len(tabela)):
+        for j in range(len(tabela)+1):
+            if j==0:
+                resultCon.append(alternativa[i])
+                resultDes.append(alternativa[i])
+                resultMveto.append(alternativa[i])
+            else:
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                    resultMveto.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultMveto.append('-')
+                    resultDes.append('-')
 
-    print result
-    return render(request,'main/dados.html', {'alternativas': alternativa, 'criterios': criterios, 'tabela': tabela, 'mCon': mCon, 'i': len(tabela[i])+1 , 'result': result })
+    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
 
 def csv_reader_electreIII(request):
     """
@@ -285,6 +375,8 @@ def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
     somaPesos = 0
     mConcordancia = []
 
+    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
+
     for x in range(len(vetorPesos)):
         somaPesos += float(vetorPesos[x].replace(',','.'))
 
@@ -310,11 +402,13 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, q):
         for x in range(len(vetorPesos)):
             somaPesos += float(vetorPesos[x].replace(',','.'))
        
+            somaPesos += vetorPesos[x]
+
         for i in range(nColunas):
             linha = []
-       
+
             for j in range(len(tabela[i])):
-   
+
                 somatorioW = 0
                 for y in range(len(tabela[j])):
                     valor = 0
@@ -361,14 +455,19 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
 
     matrizesDiscordancia = []
 
-  
+
     for i in range(nColunas):
         mDiscordancia = []
-  
+
         for j in range(len(tabela[i])):
             linha = []
+<<<<<<< HEAD
        
             for y in range(len(tabela[j])):
+=======
+
+            for y in range(nLinhas):
+>>>>>>> 2d7319673fe6a1eae55b0d48a7df061411a1533e
                 if i==y or j==y:
                     linha.append(0)
                 else:
@@ -377,11 +476,11 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
                     else:
                         if float(tabela[i][y]) < (float(tabela[j][y]) - v):
                             linha.append(1)
-                            
+
                         else:
                             result = ((float(tabela[i][y]) - float(tabela[j][y]) - p)/v-p)
                             linha.append(round(result, 2))
-    
+
             mDiscordancia.append(linha)
 
         for x in range(len(mDiscordancia[j])):
@@ -407,17 +506,17 @@ def matrizCredibilidade(cidades, nLinhas, nColunas, mConcordancia, mDiscordancia
             for k in range(nLinhas):
                 if (mDiscordancia[k][i][j] > mConcordancia[i][j]):
                     indiceDiscordanciaMaior = True
-            
+
             if (indiceDiscordanciaMaior):
                 resultado1 = 1.0
                 for k in range(nLinhas):
                     resultado1 *= round(((1.0-mDiscordancia[k][i][j])/(1.0-mConcordancia[i][j])), 2)
                 resultado2 = mConcordancia[i][j] * resultado1
-                
+
                 linha.append(resultado2)
             else:
                 linha.append(mConcordancia[i][j])
-            
+
         matrizCredibilidade. append(linha)
 
     for x in range(nColunas):
@@ -435,12 +534,12 @@ def destilacao(cidades, nColunas, nLinhas, mCredibilidade):
     for i in range(len(mCredibilidade)):
         mCredibilidade[i].append(cidades[i])
 
-    
+
 
     fim = False
     while (fim==False):
 
-        
+
 
         lAst = lambdaAsterisco(lambdaMaxima(mCredibilidade, nColunas))
 
@@ -466,7 +565,7 @@ def destilacao(cidades, nColunas, nLinhas, mCredibilidade):
             while (i < len(vetorSelecionadas)):
                 achou = False
                 for n in range(len(destilacaoAscendente)):
-                    
+
                     if(vetorSelecionadas[i][0] == destilacaoAscendente[n][0]):
                         achou = True
                 if (achou ==False):
@@ -498,7 +597,7 @@ def determinaAlternativaAscendente(mCredibilidade, lAst, cidades):
                     linha.append(0)
 
         matrizOrdenacao.append(linha)
-   
+
     matrizQualificacao = []
     for i in range(len(matrizOrdenacao)):
         vetorQualificacao = []
@@ -514,7 +613,7 @@ def determinaAlternativaAscendente(mCredibilidade, lAst, cidades):
         vetorQualificacao.append(cidades[i])
         vetorQualificacao.append(resultado)
         matrizQualificacao.append(vetorQualificacao)
-    
+
 
     matrizQualificacao.sort(key=lambda x: x[1], reverse = True)
 

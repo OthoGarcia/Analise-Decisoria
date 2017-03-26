@@ -14,7 +14,10 @@ urlpatterns = [
     url(r'^main/arquivo/$', views.upload_file, name='inserirArquivo'),
     url(r'^main/dados/$', views.csv_reader_electreIII, name='dados'),
     url(r'^main/alternativas/$', views.getAlternativas, name='getAlternativas'),
+    url(r'^main/alternativasIII/$', views.getAlternativasIII, name='getAlternativasIII'),
+    url(r'^main/electreIII_InformaIndice/$', views.electreIII_InformaIndice, name='electreIII_InformaIndice'),
     url(r'^main/preencheMatriz/$', views.preencheMatriz, name='preencheMatriz'),
+    url(r'^main/preencheMatrizIII/$', views.preencheMatrizIII, name='preencheMatrizIII'),
     url(r'^main/electreIII/$', views.electreIII, name='electreIII'),
     url(r'^main/electreIII_valores/$', views.electreIII_valores, name='electreIII_valores'),
 ]
