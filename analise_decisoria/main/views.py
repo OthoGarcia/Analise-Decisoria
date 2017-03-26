@@ -184,7 +184,7 @@ def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            csv_reader(request)
+            csv_reader_electreIII(request)
     else:
         form = UploadFileForm()
     return render(request, 'main/insert_tema_tamanho.html', {'arquivo': form})
@@ -246,11 +246,6 @@ def csv_reader_electreIII(request):
     alternativa = []
     criterios = []
     pesos = []
-    concordancia = float
-    discordancia = float
-    preferencia = float
-    indiferenca = float
-    veto = float
     sinal = []
     tabela= []
     iterator=itertools.count()
@@ -258,23 +253,23 @@ def csv_reader_electreIII(request):
         if i != 0 :
             alternativa.append(data[i][0])
     for i in range(1,len(data[0])):
-        pesos.append(data[len(data)-2][i])
+        pesos.append(data[len(data)-4][i].replace(',','.'))
         criterios.append(data[0][i])
-        sinal.append(data[len(data)-1][i])
     for i in range(1,len(data)-2):
         linha=[]
         if i != 0 :
             for j in range(1,len(data[0])):
                 linha.append(data[i][j])
             tabela.append(linha)
-    c = float(data[len(data)-1][1].replace(',','.'))
-    d = float(data[len(data)-1][2].replace(',','.'))
+    c = float(data[len(data)-3][1].replace(',','.'))
+    d = float(data[len(data)-3][2].replace(',','.'))
+    p = float(data[len(data)-2][1].replace(',','.'))
+    q = float(data[len(data)-2][2].replace(',','.'))
+    v = float(data[len(data)-1][1].replace(',','.'))
 
     teste = len(tabela[0])
-    mCon = matrizConcordanciaIII(alternativa, tabela, len(tabela), len(tabela[0]), pesos, preferencia, diferenca)
-    mDes = matrizDiscordanciaIII(alternativa,tabela, len(tabela),  len(tabela[0]), pesos, preferencia, veto)
-    mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
-    kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    mCon = matrizConcordanciaIII(alternativa, tabela, len(tabela), len(tabela[0]), pesos, p, q)
+    mDes = matrizDiscordanciaIII(alternativa,tabela, len(tabela),  len(tabela[0]), pesos, p, v)
     result = []
     for i in range(len(tabela)):
         for j in range(len(tabela[i])+1):
@@ -308,12 +303,12 @@ def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
         mConcordancia.append(linha)
     return mConcordancia
 
-def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, preferencia, diferenca):
+def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, q):
 
         somaPesos = 0
         mConcordancia = []
         for x in range(len(vetorPesos)):
-            somaPesos += vetorPesos[x]
+            somaPesos += float(vetorPesos[x].replace(',','.'))
        
         for i in range(nColunas):
             linha = []
@@ -321,45 +316,21 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, prefer
             for j in range(len(tabela[i])):
    
                 somatorioW = 0
-                for y in range(nLinhas):
+                for y in range(len(tabela[j])):
                     valor = 0
-                    if tabela[i][y] > (tabela[j][y] - q):
+                    if float(tabela[i][y]) > (float(tabela[j][y]) - q):
                         valor = 1
                     else:
-                        if tabela[i][y] <= (tabela[j][y] - p):
+                        if float(tabela[i][y]) <= ((float(tabela[j][y]) - p)):
                             valor = 0
                         else:
-                            somatorioW += vetorPesos[y] * ((p-(tabela[i][y]- tabela[j][y]))/p-q)
+                            somatorioW += float(vetorPesos[y]) * (p-(float(tabela[i][y])- float(tabela[j][y]))/p-q)
                     if valor == 1:
-                        somatorioW += vetorPesos[y]
+                        somatorioW += float(vetorPesos[y])
                 result = 1.0/somaPesos * somatorioW
                 linha.append(round(result, 2))
             mConcordancia.append(linha)
         return mConcordancia
-
-def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
-    somaPesos = 0
-    mConcordancia = []
-    for x in range(len(vetorPesos)):
-        somaPesos += float(vetorPesos[x].replace(',','.'))
-    for i in range(0,nLinhas):
-        linha = []
-        for j in range(0,nLinhas):
-            if i == j :
-                linha.append(1)
-            else :
-                somatorioW = 0
-                for y in range(nColunas):
-                    if int(tabela[i][y]) >= int(tabela[j][y]):
-                        somatorioW += float(vetorPesos[y].replace(',','.'))/somaPesos
-                    '''print('i='+str(i)+'j='+str(j)+'y='+str(y)+str(tabela[i][y])+'>'+str(tabela[j][y]))
-                    print(str(somatorioW))
-                    print(float(vetorPesos[y].replace(',','.'))/somaPesos)'''
-                print('_____________')
-                linha.append(round(somatorioW, 2))
-        mConcordancia.append(linha)
-    return mConcordancia
-
 
 def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
     vetorDiferencas = []
@@ -380,13 +351,12 @@ def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
             for y in range(nColunas):
                 vResultante = (float(tabela[i][y]) - float(tabela[j][y]))/vetorDiferencas[y]
                 vetorIndices.append(round(vResultante, 2))
-                print('i='+str(i)+'j='+str(j)+'y='+str(y))
             linha.append(max(vetorIndices))
         mDiscordancia.append(linha)
     return mDiscordancia
 
 
-def matrizDisconcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, preferencia, veto):
+def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
 
 
     matrizesDiscordancia = []
@@ -398,18 +368,18 @@ def matrizDisconcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, pre
         for j in range(len(tabela[i])):
             linha = []
        
-            for y in range(nLinhas):
+            for y in range(len(tabela[j])):
                 if i==y or j==y:
                     linha.append(0)
                 else:
-                    if tabela[i][y] > (tabela[j][y] - p):
+                    if float(tabela[i][y]) > (float(tabela[j][y]) - p):
                         linha.append(0)
                     else:
-                        if tabela[i][y] < (tabela[j][y] - v):
+                        if float(tabela[i][y]) < (float(tabela[j][y]) - v):
                             linha.append(1)
                             
                         else:
-                            result = ((tabela[i][y] - tabela[j][y] - p)/v-p)
+                            result = ((float(tabela[i][y]) - float(tabela[j][y]) - p)/v-p)
                             linha.append(round(result, 2))
     
             mDiscordancia.append(linha)
@@ -603,7 +573,6 @@ def calculaKernel(matrizVeto,nLinhas, cidades):
                 linha.append(j)
         matrizSobreclassifica.append(linha)
     kernel = []
-    print "\nKernel\n"
 
     for k in range(nLinhas):
         achou = False
