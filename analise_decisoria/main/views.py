@@ -4,6 +4,7 @@ from .forms import captura_entrada_form, UploadFileForm, captura_entrada_AHP_For
 import csv
 from django.template.context_processors import csrf
 from django.forms import formset_factory
+from collections import defaultdict
 import itertools
 
 # Create your views here.
@@ -167,7 +168,41 @@ def preencheMatrizTri(request):
 
     subordinacao = matrizSubordinacao(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), int(request.session['preferencia']), int(request.session['veto']), mCredAB, mCredBA, request.session['lambda'], request.session['classes'])
 
+    print("Pess")
+    classificacaoPess = classificacaoPessimista(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), subordinacao, request.session['classes'], request.session['limites'])
+    print classificacaoPess
+    print("Otimi")
+    classificacaoOt = classificacaoOtimista(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), subordinacao, request.session['classes'], request.session['limites'])
+    print classificacaoOt
+
     return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
+
+def classificacaoPessimista(cidades, nAlternativas, nCriterios, subordinacao, classes, limites):
+	classificacao = defaultdict(list)
+
+	for i in range(nAlternativas):
+		linha = []
+		for j in range(len(classes)):
+			# print j
+			if(float(subordinacao[i][j]) < 2):
+				break
+		if(j < len(classes)):
+			classificacao[classes[j+1]].append(cidades[i])
+		else:
+			classificacao[classes[j]].append(cidades[i])
+	return classificacao
+
+def classificacaoOtimista(cidades, nAlternativas, nCriterios, subordinacao, classes, limites):
+	classificacao = defaultdict(list)
+
+	for i in range(nAlternativas):
+		linha = []
+		for j in reversed(range(len(classes))):
+			# print j
+			if(float(subordinacao[i][j]) < 2):
+				break
+		classificacao[classes[j]].append(cidades[i])
+	return classificacao
 
 def matrizSubordinacao(cidades, tabela, nAlternativas, nCriterios, p, v, mCredibilidadeAB, mCredibilidadeBA, lamb, classes):
 	subordinacao = []
