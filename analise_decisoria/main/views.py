@@ -80,6 +80,82 @@ def electreIII (request):
     else:
         return render(request, 'main/electreIII.html',{'form': captura_entrada_form()})
 
+def getAlternativasIII (request):
+    if request.method   == 'POST':
+        alternativas    = []
+        criterios       = []
+        request.session['pesos']       = []
+        request.session['alternativa'] = []
+        request.session['criterio']    = []
+        qtdeAlternativa = request.POST['alternativa']
+        qtdeCriterio    = request.POST['criterio']
+
+        for i in range(0,int(request.session['qtdeAlternativa'])):
+            alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
+            request.session['alternativa'].append(request.POST['form-'+str(i)+'-alternativa'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            criterios.append(request.POST['form-'+str(i)+'-criterio'])
+            request.session['criterio'].append(request.POST['form-'+str(i)+'-criterio'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            request.session['pesos'].append(request.POST['form-'+str(i)+'-pesos'])
+
+        return render(request, 'main/electreIII_InformaIndice.html')
+
+    else:
+		return render(request, 'main/electreIII_valores.html')
+
+def electreIII_InformaIndice (request):
+    if request.method   == 'POST':
+
+        request.session['concordancia'] = request.POST['concordancia']
+        request.session['discordancia'] = request.POST['discordancia']
+        request.session['preferencia']  = request.POST['preferencia']
+        request.session['indiferenca']  = request.POST['indiferenca']
+        request.session['veto']         = request.POST['veto']
+
+        return render(request, 'main/preencheMatrizIII.html', {'alternativas' : request.session['alternativa'], 'criterios' : request.session['criterio']})
+
+    else:
+		return render(request, 'main/electreIII_valores.html')
+
+def preencheMatrizIII (request):
+
+    tabela = []
+    mCon   = []
+    mDes   = []
+
+    for i in range(int(request.session['qtdeCriterio'])):
+        linha=[]
+        for j in range(int(request.session['qtdeAlternativa'])):
+            linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
+        tabela.append(linha)
+
+    mCon = matrizConcordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'])
+    mDes = matrizDiscordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]))
+    '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
+    kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    '''
+    result    = []
+    resultCon = []
+    resultDes = []
+    for i in range(len(tabela)):
+        for j in range(len(tabela[i])+1):
+            if j==0:
+                result.append(request.session['alternativa'][i])
+                resultCon.append(request.session['alternativa'][i])
+                resultDes.append(request.session['alternativa'][i])
+            else:
+                result.append(tabela[i][j-1])
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultDes.append('-')
+    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
+
 def electreIII_valores (request):
     if request.method   == 'POST':
         riterioFormSet.montaVetorCriterio
