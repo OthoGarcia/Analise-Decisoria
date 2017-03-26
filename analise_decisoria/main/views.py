@@ -261,8 +261,8 @@ def preencheMatrizIII (request):
             linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
         tabela.append(linha)
 
-    mCon = matrizConcordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'])
-    mDes = matrizDiscordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]))
+    mCon = matrizConcordanciaIII(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'], request.session['preferencia'], request.session['indiferenca'])
+    mDes = matrizDiscordanciaIII(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'], request.session['preferencia'], request.session['vetor'])
     '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
     kernel = calculaKernel(mVeto, len(tabela), alternativa )
     '''
@@ -531,8 +531,6 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, q):
         for x in range(len(vetorPesos)):
             somaPesos += float(vetorPesos[x].replace(',','.'))
 
-            somaPesos += vetorPesos[x]
-
         for i in range(nColunas):
             linha = []
 
@@ -590,7 +588,7 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
 
         for j in range(len(tabela[i])):
             linha = []
-
+            
             for y in range(len(tabela[j])):
 
                 if i==y or j==y:
