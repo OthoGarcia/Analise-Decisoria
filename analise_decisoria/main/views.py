@@ -163,8 +163,8 @@ def preencheMatrizTri(request):
     mDesAB = matrizDiscordanciaTRI(request.session['alternativa'], request.session['classes'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['veto']), request.session['limites'], 0)
     mDesBA = matrizDiscordanciaTRI(request.session['alternativa'], request.session['classes'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['veto']), request.session['limites'], 1)
 
-    mCredBA = matrizCredibilidadeTRI(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConBA, mDesBA, request.session['limites'])
-    mCredAB = matrizCredibilidadeTRI(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConAB, mDesBA, request.session['limites'])
+    mCredAB = matrizCredibilidadeTRI(request.session['alternativa'], request.session['classes'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConAB, mDesAB, request.session['limites'], 0)
+    mCredBA = matrizCredibilidadeTRI(request.session['alternativa'], request.session['classes'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConBA, mDesBA, request.session['limites'], 1)
 
     subordinacao = matrizSubordinacao(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), int(request.session['preferencia']), int(request.session['veto']), mCredAB, mCredBA, request.session['lambda'], request.session['classes'])
 
@@ -225,27 +225,36 @@ def matrizSubordinacao(cidades, tabela, nAlternativas, nCriterios, p, v, mCredib
 
 	return subordinacao
 
-def matrizCredibilidadeTRI(cidades, nAlternativas, nCriterios, mConcordancia, mDiscordancia, limites):
-	print "Credibilidade"
+def matrizCredibilidadeTRI(cidades, classes, nAlternativas, nCriterios, mConcordancia, mDiscordancia, limites, inverte):
 	matrizCredibilidade = []
 	mCredibilidade= []
 
-	for i in range(nAlternativas):
-		linha=[]
-		for j in range(len(limites[i])):
-			valor = 1
-			if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
+	if(inverte == 0):
+		for i in range(nAlternativas):
+			linha=[]
+			for j in range(len(mConcordancia[0])):
 				valor = 1.0
-			elif(float(mConcordancia[i][j]) == 1.0):
+				if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
+					valor = 1.0
+				else:
+					for k in range(nCriterios):
+						valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
+				linha.append(round(float(mConcordancia[i][j]) * float(valor), 2))
+			mCredibilidade.append(linha)
+			print mCredibilidade[i], cidades[i]
+	else:
+		for i in range(len(classes)):
+			linha=[]
+			for j in range(len(mConcordancia[0])):
 				valor = 1.0
-			else:
-				# print mDiscordancia[i][j], mConcordancia[i][j]
-				for k in range(nCriterios):
-					valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
-			linha.append(round(float(mConcordancia[i][j]) * valor, 2))
-		mCredibilidade.append(linha)
-		print(mCredibilidade[i], cidades[i])
-
+				if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
+					valor = 1.0
+				else:
+					for k in range(nCriterios):
+						valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
+				linha.append(round(float(mConcordancia[i][j]) * float(valor), 2))
+			mCredibilidade.append(linha)
+			print mCredibilidade[i], cidades[i]
 	return mCredibilidade
 
 def matrizConcordanciaTRI(cidades, classes, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites, inverte):
@@ -332,7 +341,7 @@ def matrizDiscordanciaTRI(cidades, classes, tabela, nAlternativas, nCriterios, v
 			mDiscordancia.append(linha)
 			print mDiscordancia[i], cidades[i]
 	return mDiscordancia
-    
+
 def electreIII (request):
     if request.method   == 'POST':
         formCapEntra     = captura_entrada_form(request.POST)
