@@ -157,8 +157,8 @@ def preencheMatrizTri(request):
             linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
         tabela.append(linha)
 
-    mConAB = matrizConcordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), request.session['limites'])
-    mConBA = matrizConcordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), tabela)
+    mConAB = matrizConcordanciaTRI(request.session['alternativa'], request.session['classes'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), request.session['limites'], 0)
+    mConBA = matrizConcordanciaTRI(request.session['alternativa'], request.session['classes'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), request.session['limites'], 1)
 
     mDesBA = matrizDiscordanciaTRI(request.session['alternativa'], request.session['limites'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['veto']), tabela)
     mDesAB = matrizDiscordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['veto']), request.session['limites'])
@@ -248,37 +248,51 @@ def matrizCredibilidadeTRI(cidades, nAlternativas, nCriterios, mConcordancia, mD
 
 	return mCredibilidade
 
-def matrizConcordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites):
-    print "Concordancia"
+def matrizConcordanciaTRI(cidades, classes, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites, inverte):
     somaPesos = 0
+    print("concordancia")
     mConcordancia = []
     mConcordancia = []
-
     mConcordanciaParcial= []
 
     for x in range(len(vetorPesos)):
-    	somaPesos += float(vetorPesos[x].replace(',','.'))
+    	somaPesos += float(vetorPesos[x])
 
-    for i in range(nAlternativas):
-    	linha = []
-    	for j in range(len(tabela[i])):
-    		valor = 0.0
-    		if (float(limites[i][j]) - float(tabela[i][j])) >= float(p):
-    			valor = 0.0
-    		elif (float(limites[i][j]) - float(tabela[i][j])) < float(q):
-    			valor = 1.0
-    		else:
-    			valor = (float(p) + float(tabela[i][j]) - float(limites[i][j])) / (float(p) - float(q))
-    		linha.append(valor)
-    		# print(valor)
-    	mConcordanciaParcial.append(linha)
 
-    for i in range(nAlternativas):
-    	linha = []
-    	for j in range(len(mConcordanciaParcial)):
-    		linha.append(round (somaPesos * (mConcordanciaParcial[i][j] / somaPesos), 2))
-    	mConcordancia.append(linha)
-    	print mConcordancia[i], cidades[i]
+    if (inverte == 0):
+        for i in range(nAlternativas):
+            linha = []
+            for j in range(nCriterios):
+                somatorio = 0
+                for k in range(len(classes)):
+                    valor = 0.0
+                    if (float(limites[k][j]) - float(tabela[i][j])) >= float(p):
+                        valor = 0.0
+                    elif (float(limites[k][j]) - float(tabela[i][j])) < float(q):
+                        valor = 1.0
+                    else:
+                        valor += (float(p) + float(tabela[i][j]) - float(limites[k][j])) / (float(p) - float(q))
+                    somatorio += float(valor)
+                linha.append(round(somatorio,2))
+            mConcordancia.append(linha)
+            print(mConcordancia[i], cidades[i])
+    else:
+		for i in range(len(classes)):
+			linha = []
+			for j in range(nAlternativas):
+				somatorio = 0
+				for k in range(nCriterios):
+					valor = 0.0
+	    			if (float(tabela[j][k]) - float(limites[i][k])) >= float(p):
+	    				valor = 0.0
+	    			elif (float(tabela[j][k]) - float(limites[i][k])) < float(q):
+	    				valor = 1.0
+	    			else:
+	    				valor += (float(p) + float(tabela[j][k]) - float(limites[i][k])) / (float(p) - float(q))
+	    			somatorio += valor
+				linha.append(round(somatorio,2))
+			mConcordancia.append(linha)
+			print(mConcordancia[i], classes[i])
     return mConcordancia
 
 def matrizDiscordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos, p, v, limites):
