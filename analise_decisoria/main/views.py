@@ -215,7 +215,7 @@ def csv_reader(request):
                     resultMveto.append('-')
                     resultDes.append('-')
 
-    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+2 ,'iT': len(tabela[i])+1,  'result': result })
+    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
 
 
 def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
