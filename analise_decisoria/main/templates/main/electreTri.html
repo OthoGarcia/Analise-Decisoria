@@ -1,0 +1,37 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<br></br>
+<div class="container-fluid">
+       <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+         <div class="panel panel-success" >
+                <div class="panel-heading">
+                    <div class="panel-title"><b>Informe os dados:</b>
+                       <a href="{% url 'inserirArquivo' %}" type="button" class="btn btn-info btn-sm">
+                          <span class="glyphicon glyphicon-open"></span> Enviar
+                       </a>
+                    </div>
+                    <div class="panel panel-success"></div>
+                    <div style="float:right; font-size: 80%; position: relative; top:-10px"></div>
+
+                    <form id="loginform" class="form-horizontal" role="form" action="#" method="POST" >
+                      {% csrf_token %}
+                       <div class="form-group">
+                         <label for="firstname" class="col-md-4 control-label">Quantidade de Criterio:</label>
+                         {{ form.qtdeCriterio }}
+                       </div>
+
+                       <div class="form-group">
+                         <label for="firstname" class="col-md-4 control-label">Quantidade Alternativa:</label>
+                         {{ form.qtdeAlternativa }}
+                       </div>
+
+                       <button class="btn btn-lg btn-primary btn-success" type="submit">Confirmar</button>
+                       <a class="btn btn-lg btn-primary btn-danger" href="\">Cancelar</a>
+                    </form>
+
+                </div>
+        </div>
+      </div>
+</div>
+{% endblock %}

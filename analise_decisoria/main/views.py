@@ -64,6 +64,76 @@ def teste(request):
             return render(request, 'ahp/ahp_teste.html', {'criterio_formset': criterio_formset})
     return render(request, 'ahp/ahp_teste.html', {'criterio_formset': CriterioFormSet(prefix='criterio_form')})
 
+def electreTri(request):
+    if request.method   == 'POST':
+        formCapEntra     = captura_entrada_form(request.POST)
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
+        if formCapEntra.is_valid():
+            criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
+            alternativaFormSet = formset_factory(montaVetorAlternativa, extra=int(qtdeAlternativa))
+            pesoFormSet        = formset_factory(montaVetorPeso, extra=int(qtdeCriterio))
+            return render(request, 'main/electreTri_InformaCriterioAlternativa.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet, 'pesoFormSet' : pesoFormSet, 'alternativa' : qtdeAlternativa, 'criterio' : qtdeCriterio } )
+        else:
+            return render(request, 'main/electreTri.html',{'form': form})
+    else:
+        return render(request, 'main/electreTri.html',{'form': captura_entrada_form()})
+
+def getAlternativasTri(request):
+    if request.method   == 'POST':
+        alternativas    = []
+        criterios       = []
+        request.session['pesos']       = []
+        request.session['alternativa'] = []
+        request.session['criterio']    = []
+        qtdeAlternativa = request.POST['alternativa']
+        qtdeCriterio    = request.POST['criterio']
+
+        for i in range(0,int(request.session['qtdeAlternativa'])):
+            alternativas.append(request.POST['form-'+str(i)+'-alternativa'])
+            request.session['alternativa'].append(request.POST['form-'+str(i)+'-alternativa'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            criterios.append(request.POST['form-'+str(i)+'-criterio'])
+            request.session['criterio'].append(request.POST['form-'+str(i)+'-criterio'])
+
+        for i in range(0,int(request.session['qtdeCriterio'])):
+            request.session['pesos'].append(request.POST['form-'+str(i)+'-pesos'])
+
+        classes = ['Excelente', 'Bom', 'Regular', 'Ruim', 'Pessimo']
+
+    	request.session['limites'] = []
+    	numeros = 8.0
+
+    	for i in range(len(classes)):
+    		limites_linhas= []
+    		for j in range(int(qtdeCriterio)):
+    			limites_linhas.append(numeros)
+    		request.session['limites'].append(limites_linhas)
+    		print request.session['limites'][i], classes[i]
+    		numeros -= 2.0
+
+        return render(request, 'main/electreTri_InformaIndice.html')
+
+    else:
+		return render(request, 'main/electreTri.html')
+
+def electreTri_InformaIndice (request):
+    if request.method   == 'POST':
+
+        request.session['concordancia'] = request.POST['concordancia']
+        request.session['discordancia'] = request.POST['discordancia']
+        request.session['preferencia']  = request.POST['preferencia']
+        request.session['indiferenca']  = request.POST['indiferenca']
+        request.session['veto']         = request.POST['veto']
+        request.session['lambda']       = request.POST['lambda']
+
+        return render(request, 'main/preencheMatrizIII.html', {'alternativas' : request.session['alternativa'], 'criterios' : request.session['criterio']})
+
+    else:
+		return render(request, 'main/electreIII_valores.html')
+
 def electreIII (request):
     if request.method   == 'POST':
         formCapEntra     = captura_entrada_form(request.POST)
