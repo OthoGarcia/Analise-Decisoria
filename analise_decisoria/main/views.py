@@ -178,7 +178,7 @@ def preencheMatriz (request):
                 else:
                     resultCon.append('-')
                     resultDes.append('-')
-    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result })
+    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
 
 def upload_file(request):
     if request.method == 'POST':
@@ -328,35 +328,14 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, prefer
                     else:
                         if tabela[i][y] <= (tabela[j][y] - p):
                             valor = 0
-                
                         else:
                             somatorioW += vetorPesos[y] * ((p-(tabela[i][y]- tabela[j][y]))/p-q)
                     if valor == 1:
                         somatorioW += vetorPesos[y]
                 result = 1.0/somaPesos * somatorioW
                 linha.append(round(result, 2))
-      
             mConcordancia.append(linha)
-            print mConcordancia[i], cidades[i]
         return mConcordancia
-    for i in range(len(tabela)):
-        for j in range(len(tabela)+1):
-            if j==0:
-                resultCon.append(alternativa[i])
-                resultDes.append(alternativa[i])
-                resultMveto.append(alternativa[i])
-            else:
-                if (i != j-1):
-                    resultCon.append(mCon[i][j-1])
-                    resultDes.append(mDes[i][j-1])
-                    resultMveto.append(mDes[i][j-1])
-                else:
-                    resultCon.append('-')
-                    resultMveto.append('-')
-                    resultDes.append('-')
-
-    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+2 ,'iT': len(tabela[i])+1,  'result': result })
-
 
 def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
     somaPesos = 0

@@ -1,0 +1,114 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+{% block content %}
+<br></br>
+<div class="container-fluid">
+       <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+         <div class="panel panel-success" >
+                <div class="panel-heading">
+                    <div class="panel-title"><b>Informe os dados:</b></div>
+                    <div style="float:right; font-size: 80%; position: relative; top:-10px"></div>
+                    <style>
+                      table {
+                          font-family: arial, sans-serif;
+                          border-collapse: collapse;
+                          width: 100%;
+                      }
+
+                      td, th {
+                          border: 1px solid #dddddd;
+                          text-align: left;
+                          padding: 8px;
+                      }
+
+                      tr:nth-child(even) {
+                          background-color: #dddddd;
+                      }
+                    </style>
+                    <h3>Tabela Pagamento</h3>
+                    <table>
+                      <tr>
+                        <th>Criterio/Alternativa</th>
+                        {% for criterio in criterios %}
+                          <th>{{ criterio }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in result %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:iT %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
+                    <br>
+                    <h3>Matriz Concordancia</h3>
+                    <table>
+                      <tr>
+                        <th>Alternativa/Alternativa</th>
+                        {% for alternativa in alternativas %}
+                          <th>{{ alternativa }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in mCon %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:i %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
+                    <br>
+                    <h3>Matriz Discordancia</h3>
+                    <table>
+                      <tr>
+                        <th>Alternativa/Alternativa</th>
+                        {% for alternativa in alternativas %}
+                          <th>{{ alternativa }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in mDes %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:i %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
+                    <br>
+                    <h3>Matriz de Veto</h3>
+                    <table>
+                      <tr>
+                        <th>Alternativa/Alternativa</th>
+                        {% for alternativa in alternativas %}
+                          <th>{{ alternativa }} </th>
+                        {% endfor %}
+                      </tr>
+                      <tr>
+                      {% for item in mVeto %}
+                          <td>{{ item }}</td>
+                        {% if forloop.counter|divisibleby:i %}
+                          </tr>
+                          <tr>
+                        {% endif %}
+                      {% endfor %}
+                    </tr>
+                    </table>
+                    <br>
+                    <h3>Resultado</h3>
+                    <ol>
+                      {% for item in kernel %}
+                        <li>{{ item }}</li>
+                      {% endfor %}
+                    </ol>
+                </div>
+        </div>
+      </div>
+</div>
+{% endblock %}
