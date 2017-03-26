@@ -3,7 +3,7 @@
 {% block content %}
 <br></br>
 
-<form id="loginform" class="form-horizontal" role="form" action="{% url 'preencheMatriz' %}" method="POST" >
+<form id="loginform" class="form-horizontal" role="form" action="{% url 'preencheMatrizIII' %}" method="POST" >
   {% csrf_token %}
    <div class="container-fluid">
       {% for criterio in criterios %}

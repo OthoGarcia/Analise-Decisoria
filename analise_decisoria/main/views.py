@@ -70,6 +70,9 @@ def electreTri(request):
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
 
+        request.session['qtdeAlternativa'] = request.POST['qtdeAlternativa']
+        request.session['qtdeCriterio']    = request.POST['qtdeCriterio']
+
         if formCapEntra.is_valid():
             criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
             alternativaFormSet = formset_factory(montaVetorAlternativa, extra=int(qtdeAlternativa))
@@ -134,11 +137,15 @@ def electreTri_InformaIndice (request):
     else:
 		return render(request, 'main/electreIII_valores.html')
 
-def preencheMatrizTri (request):
+def preencheMatrizTri(request):
 
     tabela = []
-    mCon   = []
-    mDes   = []
+
+    mDesBA = []
+    mDesAB = []
+
+    mConAB = []
+    mConBA = []
 
     for i in range(int(request.session['qtdeCriterio'])):
         linha=[]
@@ -146,35 +153,51 @@ def preencheMatrizTri (request):
             linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
         tabela.append(linha)
 
-    mCon = matrizConcordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'])
-    mDes = matrizDiscordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]))
-    '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
-    kernel = calculaKernel(mVeto, len(tabela), alternativa )
-    '''
-    result    = []
-    resultCon = []
-    resultDes = []
-    for i in range(len(tabela)):
-        for j in range(len(tabela[i])+1):
-            if j==0:
-                result.append(request.session['alternativa'][i])
-                resultCon.append(request.session['alternativa'][i])
-                resultDes.append(request.session['alternativa'][i])
-            else:
-                result.append(tabela[i][j-1])
-                if (i != j-1):
-                    resultCon.append(mCon[i][j-1])
-                    resultDes.append(mDes[i][j-1])
-                else:
-                    resultCon.append('-')
-                    resultDes.append('-')
+    mConAB = matrizConcordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), request.session['limites'])
+    mConBA = matrizConcordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), tabela)
+
     return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
+
+def matrizConcordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites):
+
+    somaPesos = 0
+    mConcordancia = []
+    mConcordancia = []
+
+    mConcordanciaParcial= []
+
+    for x in range(len(vetorPesos)):
+    	somaPesos += float(vetorPesos[x].replace(',','.'))
+
+    for i in range(nAlternativas):
+    	linha = []
+    	for j in range(len(tabela[i])):
+    		valor = 0.0
+    		if (float(limites[i][j]) - float(tabela[i][j])) >= float(p):
+    			valor = 0.0
+    		elif (float(limites[i][j]) - float(tabela[i][j])) < float(q):
+    			valor = 1.0
+    		else:
+    			valor = (float(p) + float(tabela[i][j]) - float(limites[i][j])) / (float(p) - float(q))
+    		linha.append(valor)
+    		# print(valor)
+    	mConcordanciaParcial.append(linha)
+
+    for i in range(nAlternativas):
+    	linha = []
+    	for j in range(len(mConcordanciaParcial)):
+    		linha.append(round (somaPesos * (mConcordanciaParcial[i][j] / somaPesos), 2))
+    	mConcordancia.append(linha)
+    	print mConcordancia[i], cidades[i]
+    return mConcordancia
 
 def electreIII (request):
     if request.method   == 'POST':
         formCapEntra     = captura_entrada_form(request.POST)
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
+        request.session['qtdeAlternativa'] = request.POST['qtdeAlternativa']
+        request.session['qtdeCriterio']    = request.POST['qtdeCriterio']
 
         if formCapEntra.is_valid():
             criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
