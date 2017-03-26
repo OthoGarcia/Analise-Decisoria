@@ -104,17 +104,17 @@ def getAlternativasTri(request):
         for i in range(0,int(request.session['qtdeCriterio'])):
             request.session['pesos'].append(request.POST['form-'+str(i)+'-pesos'])
 
-        classes = ['Excelente', 'Bom', 'Regular', 'Ruim', 'Pessimo']
+        request.session['classes'] = ['Excelente', 'Bom', 'Regular', 'Ruim', 'Pessimo']
 
     	request.session['limites'] = []
     	numeros = 8.0
 
-    	for i in range(len(classes)):
+    	for i in range(len(request.session['classes'])):
     		limites_linhas= []
     		for j in range(int(qtdeCriterio)):
     			limites_linhas.append(numeros)
     		request.session['limites'].append(limites_linhas)
-    		print request.session['limites'][i], classes[i]
+    		print request.session['limites'][i], request.session['classes'][i]
     		numeros -= 2.0
 
         return render(request, 'main/electreTri_InformaIndice.html')
@@ -165,7 +165,30 @@ def preencheMatrizTri(request):
     mCredBA = matrizCredibilidadeTRI(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConBA, mDesBA, request.session['limites'])
     mCredAB = matrizCredibilidadeTRI(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConAB, mDesBA, request.session['limites'])
 
+    subordinacao = matrizSubordinacao(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), int(request.session['preferencia']), int(request.session['veto']), mCredAB, mCredBA, request.session['lambda'], request.session['classes'])
+
     return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
+
+def matrizSubordinacao(cidades, tabela, nAlternativas, nCriterios, p, v, mCredibilidadeAB, mCredibilidadeBA, lamb, classes):
+	subordinacao = []
+
+	for i in range(nAlternativas):
+		linha = []
+	 	for j in range(len(mCredibilidadeAB[i])):
+	 		valor = 0
+	 		if(float(mCredibilidadeAB[i][j]) >= float(lamb)) and (float(mCredibilidadeBA[i][j]) >= float(lamb)):
+	 			valor = 0
+	 		elif (float(mCredibilidadeAB[i][j]) >= float(lamb)) and not(float(mCredibilidadeBA[i][j]) >= float(lamb)):
+	 			valor = 1
+	 		elif not(float(mCredibilidadeAB[i][j]) >= float(lamb)) and (float(mCredibilidadeBA[i][j]) >= float(lamb)):
+	 			valor = 2
+	 		elif not(float(mCredibilidadeAB[i][j]) >= float(lamb)) and not(float(mCredibilidadeBA[i][j]) >= float(lamb)):
+	 			valor = 3
+	 		linha.append(valor)
+	 		print cidades[i], valor, classes[j]
+	 	subordinacao.append(linha)
+
+	return subordinacao
 
 def matrizCredibilidadeTRI(cidades, nAlternativas, nCriterios, mConcordancia, mDiscordancia, limites):
 	print "Credibilidade"
