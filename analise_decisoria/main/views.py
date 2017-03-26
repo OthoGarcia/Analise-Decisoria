@@ -461,13 +461,9 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
 
         for j in range(len(tabela[i])):
             linha = []
-<<<<<<< HEAD
        
             for y in range(len(tabela[j])):
-=======
 
-            for y in range(nLinhas):
->>>>>>> 2d7319673fe6a1eae55b0d48a7df061411a1533e
                 if i==y or j==y:
                     linha.append(0)
                 else:
