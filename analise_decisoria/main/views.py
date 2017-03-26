@@ -129,10 +129,46 @@ def electreTri_InformaIndice (request):
         request.session['veto']         = request.POST['veto']
         request.session['lambda']       = request.POST['lambda']
 
-        return render(request, 'main/preencheMatrizIII.html', {'alternativas' : request.session['alternativa'], 'criterios' : request.session['criterio']})
+        return render(request, 'main/preencheMatrizTri.html', {'alternativas' : request.session['alternativa'], 'criterios' : request.session['criterio']})
 
     else:
 		return render(request, 'main/electreIII_valores.html')
+
+def preencheMatrizTri (request):
+
+    tabela = []
+    mCon   = []
+    mDes   = []
+
+    for i in range(int(request.session['qtdeCriterio'])):
+        linha=[]
+        for j in range(int(request.session['qtdeAlternativa'])):
+            linha.append(request.POST['Criterio'+str(i)+'-Alternativa'+str(j)])
+        tabela.append(linha)
+
+    mCon = matrizConcordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'])
+    mDes = matrizDiscordanciaI(request.session['alternativa'], tabela, len(tabela), len(tabela[0]))
+    '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
+    kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    '''
+    result    = []
+    resultCon = []
+    resultDes = []
+    for i in range(len(tabela)):
+        for j in range(len(tabela[i])+1):
+            if j==0:
+                result.append(request.session['alternativa'][i])
+                resultCon.append(request.session['alternativa'][i])
+                resultDes.append(request.session['alternativa'][i])
+            else:
+                result.append(tabela[i][j-1])
+                if (i != j-1):
+                    resultCon.append(mCon[i][j-1])
+                    resultDes.append(mDes[i][j-1])
+                else:
+                    resultCon.append('-')
+                    resultDes.append('-')
+    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
 
 def electreIII (request):
     if request.method   == 'POST':
@@ -471,7 +507,7 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, q):
         mConcordancia = []
         for x in range(len(vetorPesos)):
             somaPesos += float(vetorPesos[x].replace(',','.'))
-       
+
             somaPesos += vetorPesos[x]
 
         for i in range(nColunas):
@@ -531,7 +567,7 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
 
         for j in range(len(tabela[i])):
             linha = []
-       
+
             for y in range(len(tabela[j])):
 
                 if i==y or j==y:
