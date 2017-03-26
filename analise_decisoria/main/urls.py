@@ -15,4 +15,6 @@ urlpatterns = [
     url(r'^main/dados/$', views.csv_reader, name='dados'),
     url(r'^main/alternativas/$', views.getAlternativas, name='getAlternativas'),
     url(r'^main/preencheMatriz/$', views.preencheMatriz, name='preencheMatriz'),
+    url(r'^main/electreIII/$', views.electreIII, name='electreIII'),
+    url(r'^main/electreIII_valores/$', views.electreIII_valores, name='electreIII_valores'),
 ]

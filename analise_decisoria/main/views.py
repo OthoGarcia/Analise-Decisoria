@@ -64,6 +64,40 @@ def teste(request):
             return render(request, 'ahp/ahp_teste.html', {'criterio_formset': criterio_formset})
     return render(request, 'ahp/ahp_teste.html', {'criterio_formset': CriterioFormSet(prefix='criterio_form')})
 
+def electreIII (request):
+    if request.method   == 'POST':
+        formCapEntra     = captura_entrada_form(request.POST)
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
+        if formCapEntra.is_valid():
+            criterioFormSet    = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
+            alternativaFormSet = formset_factory(montaVetorAlternativa, extra=int(qtdeAlternativa))
+            pesoFormSet        = formset_factory(montaVetorPeso, extra=int(qtdeCriterio))
+            return render(request, 'main/electreIII_valores.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet, 'pesoFormSet' : pesoFormSet, 'alternativa' : qtdeAlternativa, 'criterio' : qtdeCriterio } )
+        else:
+            return render(request, 'main/electreIII.html',{'form': form})
+    else:
+        return render(request, 'main/electreIII.html',{'form': captura_entrada_form()})
+
+def electreIII_valores (request):
+    if request.method   == 'POST':
+        riterioFormSet.montaVetorCriterio
+        formCapEntra     = captura_entrada_form(request.POST)
+        qtdeAlternativa  = request.POST['qtdeAlternativa']
+        qtdeCriterio     = request.POST['qtdeCriterio']
+
+        if formCapEntra.is_valid():
+            indice_concordanciaFormSet = formset_factory(montaVetorCriterio, extra=int(qtdeCriterio))
+            alternativaFormSet = formset_factory(montaVetorAlternativa, extra=int(qtdeAlternativa))
+            pesoFormSet        = formset_factory(montaVetorPeso, extra=int(qtdeCriterio))
+            return render(request, 'main/electreIII_indices_limites.html', {'criterioFormSet': criterioFormSet, 'alternativaFormSet' : alternativaFormSet, 'pesoFormSet' : pesoFormSet, 'alternativa' : qtdeAlternativa, 'criterio' : qtdeCriterio } )
+        else:
+            return render(request, 'main/electreIII_valores.html',{'form': form})
+    else:
+        return render(request, 'main/electreIII_valores.html',{'form': captura_entrada_form()})
+
+
 def qtdeCriterioAlternativa (request):
     if request.method   == 'POST':
         formCapEntra     = captura_entrada_form(request.POST)
@@ -144,7 +178,7 @@ def preencheMatriz (request):
                 else:
                     resultCon.append('-')
                     resultDes.append('-')
-    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result })
+    return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
 
 def upload_file(request):
     if request.method == 'POST':
@@ -217,6 +251,107 @@ def csv_reader(request):
 
     return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
 
+def csv_reader_electreIII(request):
+    """
+    Read a csv file
+    """
+    file = request.FILES['file']
+    data = [row for row in csv.reader(file.read().splitlines())]
+    alternativa = []
+    criterios = []
+    pesos = []
+    concordancia = float
+    discordancia = float
+    preferencia = float
+    indiferenca = float
+    veto = float
+    sinal = []
+    tabela= []
+    iterator=itertools.count()
+    for i in range(len(data)-2):
+        if i != 0 :
+            alternativa.append(data[i][0])
+    for i in range(1,len(data[0])):
+        pesos.append(data[len(data)-2][i])
+        criterios.append(data[0][i])
+        sinal.append(data[len(data)-1][i])
+    for i in range(1,len(data)-2):
+        linha=[]
+        if i != 0 :
+            for j in range(1,len(data[0])):
+                linha.append(data[i][j])
+            tabela.append(linha)
+    c = float(data[len(data)-1][1].replace(',','.'))
+    d = float(data[len(data)-1][2].replace(',','.'))
+
+    teste = len(tabela[0])
+    mCon = matrizConcordanciaIII(alternativa, tabela, len(tabela), len(tabela[0]), pesos, preferencia, diferenca)
+    mDes = matrizDiscordanciaIII(alternativa,tabela, len(tabela),  len(tabela[0]), pesos, preferencia, veto)
+    mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
+    kernel = calculaKernel(mVeto, len(tabela), alternativa )
+    result = []
+    for i in range(len(tabela)):
+        for j in range(len(tabela[i])+1):
+            if j==0:
+                result.append(alternativa[i])
+            else:
+                result.append(tabela[i][j-1])
+    print result
+    return render(request,'main/dados.html', {'alternativas': alternativa, 'criterios': criterios, 'tabela': tabela, 'mCon': mCon, 'i': len(tabela[i])+1 , 'result': result })
+
+def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
+
+    somaPesos = 0
+    mConcordancia = []
+
+    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
+
+    for x in range(len(vetorPesos)):
+        somaPesos += float(vetorPesos[x].replace(',','.'))
+
+
+    for i in range(nLinhas):
+        linha = []
+        for j in range(len(tabela[i])):
+
+            somatorioW = 0
+            for y in range(nColunas):
+                if tabela[i][y] >= tabela[j][y]:
+                    somatorioW += float(vetorPesos[y].replace(',','.'))
+            result = 1.0/somaPesos * somatorioW
+            linha.append(round(result, 2))
+
+        mConcordancia.append(linha)
+    return mConcordancia
+
+def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, preferencia, diferenca):
+
+        somaPesos = 0
+        mConcordancia = []
+        for x in range(len(vetorPesos)):
+            somaPesos += vetorPesos[x]
+
+        for i in range(nColunas):
+            linha = []
+
+            for j in range(len(tabela[i])):
+
+                somatorioW = 0
+                for y in range(nLinhas):
+                    valor = 0
+                    if tabela[i][y] > (tabela[j][y] - q):
+                        valor = 1
+                    else:
+                        if tabela[i][y] <= (tabela[j][y] - p):
+                            valor = 0
+                        else:
+                            somatorioW += vetorPesos[y] * ((p-(tabela[i][y]- tabela[j][y]))/p-q)
+                    if valor == 1:
+                        somatorioW += vetorPesos[y]
+                result = 1.0/somaPesos * somatorioW
+                linha.append(round(result, 2))
+            mConcordancia.append(linha)
+        return mConcordancia
 
 def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
     somaPesos = 0
@@ -241,6 +376,7 @@ def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
         mConcordancia.append(linha)
     return mConcordancia
 
+
 def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
     vetorDiferencas = []
     mDiscordancia = []
@@ -264,6 +400,202 @@ def matrizDiscordanciaI(cidades, tabela, nLinhas, nColunas):
             linha.append(max(vetorIndices))
         mDiscordancia.append(linha)
     return mDiscordancia
+
+
+def matrizDisconcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, preferencia, veto):
+
+
+    matrizesDiscordancia = []
+
+
+    for i in range(nColunas):
+        mDiscordancia = []
+
+        for j in range(len(tabela[i])):
+            linha = []
+
+            for y in range(nLinhas):
+                if i==y or j==y:
+                    linha.append(0)
+                else:
+                    if tabela[i][y] > (tabela[j][y] - p):
+                        linha.append(0)
+                    else:
+                        if tabela[i][y] < (tabela[j][y] - v):
+                            linha.append(1)
+
+                        else:
+                            result = ((tabela[i][y] - tabela[j][y] - p)/v-p)
+                            linha.append(round(result, 2))
+
+            mDiscordancia.append(linha)
+
+        for x in range(len(mDiscordancia[j])):
+            print mDiscordancia[x], cidades[x]
+
+        matrizesDiscordancia.append(mDiscordancia)
+
+
+
+    return matrizesDiscordancia
+
+
+def matrizCredibilidade(cidades, nLinhas, nColunas, mConcordancia, mDiscordancia):
+    print "\n\nMatriz de Credibilidade\n"
+
+    matrizCredibilidade = []
+
+    for i in range(nColunas):
+        linha = []
+        for j in range(len(mConcordancia[i])):
+            indiceDiscordanciaMaior = False
+
+            for k in range(nLinhas):
+                if (mDiscordancia[k][i][j] > mConcordancia[i][j]):
+                    indiceDiscordanciaMaior = True
+
+            if (indiceDiscordanciaMaior):
+                resultado1 = 1.0
+                for k in range(nLinhas):
+                    resultado1 *= round(((1.0-mDiscordancia[k][i][j])/(1.0-mConcordancia[i][j])), 2)
+                resultado2 = mConcordancia[i][j] * resultado1
+
+                linha.append(resultado2)
+            else:
+                linha.append(mConcordancia[i][j])
+
+        matrizCredibilidade. append(linha)
+
+    for x in range(nColunas):
+        print matrizCredibilidade[x], cidades[x]
+
+    return matrizCredibilidade
+
+def destilacao(cidades, nColunas, nLinhas, mCredibilidade):
+
+
+    destilacaoAscendente = []
+
+
+
+    for i in range(len(mCredibilidade)):
+        mCredibilidade[i].append(cidades[i])
+
+
+
+    fim = False
+    while (fim==False):
+
+
+
+        lAst = lambdaAsterisco(lambdaMaxima(mCredibilidade, nColunas))
+
+        vetorSelecionadas = determinaAlternativaAscendente(mCredibilidade, lAst, cidades)
+
+        for k in range(len(vetorSelecionadas)):
+            for i in range(len(mCredibilidade)):
+                if (vetorSelecionadas[k][0] == mCredibilidade[i][len(mCredibilidade)]):
+                    for j in range(len(mCredibilidade)):
+                        for g in range(len(mCredibilidade)):
+                            if (i == j or i == g):
+                                mCredibilidade[j][g] = []
+
+
+
+
+        zero = True
+        for n in range(len(vetorSelecionadas)):
+            if 0 != vetorSelecionadas[n][1]:
+                zero = False
+        if (zero):
+            i = 0
+            while (i < len(vetorSelecionadas)):
+                achou = False
+                for n in range(len(destilacaoAscendente)):
+
+                    if(vetorSelecionadas[i][0] == destilacaoAscendente[n][0]):
+                        achou = True
+                if (achou ==False):
+                    destilacaoAscendente.append(vetorSelecionadas[i])
+                i+=1
+        else:
+            for n in range(len(vetorSelecionadas)):
+                destilacaoAscendente.append(vetorSelecionadas[n])
+
+        fim = True
+        for k in range(len(mCredibilidade)):
+            for i in range(len(mCredibilidade)):
+                if mCredibilidade[k][i] != []:
+                    fim = False
+
+    print destilacaoAscendente
+
+
+def determinaAlternativaAscendente(mCredibilidade, lAst, cidades):
+
+
+    matrizOrdenacao = []
+    for i in range(len(mCredibilidade)):
+        linha = []
+        for j in range(len(mCredibilidade)):
+                if (mCredibilidade[i][j] >= lAst) and mCredibilidade[i][j] != []:
+                    linha.append(1)
+                else:
+                    linha.append(0)
+
+        matrizOrdenacao.append(linha)
+
+    matrizQualificacao = []
+    for i in range(len(matrizOrdenacao)):
+        vetorQualificacao = []
+        valorLinha = 0
+        valorColuna = 0
+        for j in range(len(matrizOrdenacao)):
+            for k in range(len(matrizOrdenacao[i])):
+                if i == j:
+                    valorLinha += matrizOrdenacao[j][k]
+                if i == k:
+                    valorColuna += matrizOrdenacao[j][k]
+        resultado = valorLinha - valorColuna
+        vetorQualificacao.append(cidades[i])
+        vetorQualificacao.append(resultado)
+        matrizQualificacao.append(vetorQualificacao)
+
+
+    matrizQualificacao.sort(key=lambda x: x[1], reverse = True)
+
+    vet = []
+    for i in range(len(matrizOrdenacao)):
+        vet.append(matrizQualificacao[i][1])
+
+    maiorIndice = max(vet)
+
+    altMaior = []
+    for i in range(len(matrizOrdenacao)):
+        if (matrizQualificacao[i][1] == maiorIndice):
+            altMaior.append(matrizQualificacao[i])
+
+    return altMaior
+
+
+def lambdaMaxima(mCredibilidade, nAlternativas):
+
+    lMax = 0
+    for i in range(len(mCredibilidade)):
+        for j in range(len(mCredibilidade)):
+            if (i!=j) and (mCredibilidade[i][j] != []):
+                if(mCredibilidade[i][j] > lMax):
+                    lMax = mCredibilidade[i][j]
+    #print lMax
+    return lMax
+
+def lambdaAsterisco(lMax):
+
+    lAst = lMax - (0.3 - 0.15*lMax)
+
+    return lAst
+
+
 
 def calculaMveto(mConcordanciaI, mDiscordanciaI, c, d, nLinhas):
     matrizVeto = []

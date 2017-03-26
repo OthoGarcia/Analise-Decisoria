@@ -1,17 +1,33 @@
 from django import forms
 from django.forms import formsets
+
 class captura_entrada_form(forms.Form):
     qtdeCriterio    = forms.IntegerField(required=True, min_value=2, max_value=99)
     qtdeAlternativa = forms.IntegerField(required=True, min_value=2, max_value=99)
 
 class montaVetorCriterio(forms.Form):
-    criterio    = forms.CharField(required=True, max_length=100)
+    criterio = forms.CharField(required=True, max_length=100)
 
 class montaVetorAlternativa(forms.Form):
     alternativa = forms.CharField(required=True, max_length=100)
 
 class montaVetorPeso(forms.Form):
     pesos = forms.FloatField(required=True, min_value=0.1, max_value=1)
+
+class indice_concordancia(forms.Form):
+    indice_concordancia = forms.FloatField(required=True, min_value=0, max_value=1)
+
+class indice_discordancia(forms.Form):
+    indice_disconcordancia = forms.FloatField(required=True, min_value=0, max_value=1)
+
+class limite_preferencia(forms.Form):
+    limite_preferencia = forms.FloatField(required=True, min_value=0, max_value=1)
+
+class limite_indiferenca(forms.Form):
+    limite_indiferenca = forms.FloatField(required=True, min_value=0, max_value=1)
+
+class limite_veto(forms.Form):
+    limite_veto = forms.FloatField(required=True, min_value=0, max_value=1)
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)

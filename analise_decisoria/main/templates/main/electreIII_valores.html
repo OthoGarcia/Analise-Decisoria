@@ -1,0 +1,77 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+{% csrf_token %}  <!-- Para poder exibir o que foi submetido. -->
+  <br></br>
+  <form id="loginform" class="form-horizontal" role="form" action="{% url 'getAlternativas' %}" method="POST" >  {% csrf_token %}
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
+          <div class="panel panel-success" >
+              <div class="panel-heading">
+                  <div class="panel-title"><b>Informe os Critérios:</b></div>
+                  <div class="panel panel-success"></div>
+                  <div class="form-group">
+                    {{ criterioFormSet.montaVetorCriterio }}
+                    {{ pesoFormSet.montaVetorPeso }}
+
+                    {% for form in criterioFormSet %}
+
+                      <div class="col-md-12">
+                        {{ form }}
+                      </div>
+
+                      <br></br>
+                    {% endfor %}
+
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+          <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
+              <div class="panel panel-success" >
+                  <div class="panel-heading">
+                      <div class="panel-title"><b>Informe os pesos dos Critérios:</b></div>
+                      <div class="panel panel-success"></div>
+                      <div class="form-group">
+                        {{ pesoFormSet.montaVetorPeso }}
+                        {% for form in pesoFormSet %}
+
+                          <div class="col-md-12">
+                            {{ form }}
+                          </div>
+
+                          <br></br>
+                        {% endfor %}
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-4">
+          <div class="panel panel-success" >
+              <div class="panel-heading">
+                  <div class="panel-title"><b>Informe as Alternativas:</b></div>
+                  <div class="panel panel-success"></div>
+                    <div class="form-group">
+                    {{ criterioFormSet.montaVetorCriterio }}
+                    {% for form in alternativaFormSet %}
+                      {{ form }}
+                      <br></br>
+                  {% endfor %}
+                    </div>
+              </div>
+          </div>
+      </div>
+
+      <input type="hidden" style="width:300px" class="form-control" name="alternativa" value="{{ alternativa_electreIII }}">
+      <input type="hidden" style="width:300px" class="form-control" name="criterio" value="{{ criterio_electreIII }}">
+
+      <div class="mainbox col-md-6">
+        <button class="btn btn-lg btn-primary btn-success" type="submit">Confirmar</button>
+        <a class="btn btn-lg btn-primary btn-danger" href="\">Cancelar</a>
+      </div>
+
+  </form>
+{% endblock %}
