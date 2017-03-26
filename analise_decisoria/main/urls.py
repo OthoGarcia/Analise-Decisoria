@@ -19,5 +19,9 @@ urlpatterns = [
     url(r'^main/preencheMatriz/$', views.preencheMatriz, name='preencheMatriz'),
     url(r'^main/preencheMatrizIII/$', views.preencheMatrizIII, name='preencheMatrizIII'),
     url(r'^main/electreIII/$', views.electreIII, name='electreIII'),
+    url(r'^main/electreTri/$', views.electreTri, name='electreTri'),
+    url(r'^main/electreTri_InformaCriterioAlternativa/$', views.getAlternativasTri, name='getAlternativasTri'),
+    url(r'^main/electreTri_InformaIndice/$', views.electreTri_InformaIndice, name='electreTri_InformaIndice'),
+    url(r'^main/preencheMatrizTri/$', views.preencheMatrizTri, name='preencheMatrizTri'),
     url(r'^main/electreIII_valores/$', views.electreIII_valores, name='electreIII_valores'),
 ]
