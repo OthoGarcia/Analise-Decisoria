@@ -139,13 +139,16 @@ def electreTri_InformaIndice (request):
 
 def preencheMatrizTri(request):
 
-    tabela = []
+    tabela  = []
 
-    mDesBA = []
-    mDesAB = []
+    mDesBA  = []
+    mDesAB  = []
 
-    mConAB = []
-    mConBA = []
+    mConAB  = []
+    mConBA  = []
+
+    mCredAB = []
+    mCredBA = []
 
     for i in range(int(request.session['qtdeCriterio'])):
         linha=[]
@@ -156,10 +159,39 @@ def preencheMatrizTri(request):
     mConAB = matrizConcordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), request.session['limites'])
     mConBA = matrizConcordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['indiferenca']), tabela)
 
+    mDesBA = matrizDiscordanciaTRI(request.session['alternativa'], request.session['limites'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['veto']), tabela)
+    mDesAB = matrizDiscordanciaTRI(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), request.session['pesos'], int(request.session['preferencia']), int(request.session['veto']), request.session['limites'])
+
+    mCredBA = matrizCredibilidadeTRI(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConBA, mDesBA, request.session['limites'])
+    mCredAB = matrizCredibilidadeTRI(request.session['alternativa'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConAB, mDesBA, request.session['limites'])
+
     return render(request,'main/dados.html', {'alternativas': request.session['alternativa'],'tabela': tabela, 'criterios': request.session['criterio'], 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'iT': len(tabela[i])+1 })
 
-def matrizConcordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites):
+def matrizCredibilidadeTRI(cidades, nAlternativas, nCriterios, mConcordancia, mDiscordancia, limites):
+	print "Credibilidade"
+	matrizCredibilidade = []
+	mCredibilidade= []
 
+	for i in range(nAlternativas):
+		linha=[]
+		for j in range(len(limites[i])):
+			valor = 1
+			if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
+				valor = 1.0
+			elif(float(mConcordancia[i][j]) == 1.0):
+				valor = 1.0
+			else:
+				# print mDiscordancia[i][j], mConcordancia[i][j]
+				for k in range(nCriterios):
+					valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
+			linha.append(round(float(mConcordancia[i][j]) * valor, 2))
+		mCredibilidade.append(linha)
+		print(mCredibilidade[i], cidades[i])
+
+	return mCredibilidade
+
+def matrizConcordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites):
+    print "Concordancia"
     somaPesos = 0
     mConcordancia = []
     mConcordancia = []
@@ -190,6 +222,25 @@ def matrizConcordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos
     	mConcordancia.append(linha)
     	print mConcordancia[i], cidades[i]
     return mConcordancia
+
+def matrizDiscordanciaTRI(cidades, tabela, nAlternativas, nCriterios, vetorPesos, p, v, limites):
+	mDiscordancia = []
+
+	for i in range(nAlternativas):
+		linha = []
+		for j in range(len(limites[i])):
+			valor = 0.0
+			if(float(limites[i][j]) - float(tabela[i][j])) < float(p):
+				valor = 0.0
+			elif(float(limites[i][j]) - float(tabela[i][j])) >= float(v):
+				valor = 1.0
+			else:
+				valor= round((float(limites[i][j]) - float(tabela[i][j]) - float(p)) / (float(v) - float(p)), 2)
+			linha.append(valor)
+		mDiscordancia.append(linha)
+		print mDiscordancia[i], cidades[i]
+
+	return mDiscordancia
 
 def electreIII (request):
     if request.method   == 'POST':
@@ -588,7 +639,7 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
 
         for j in range(len(tabela[i])):
             linha = []
-            
+
             for y in range(len(tabela[j])):
 
                 if i==y or j==y:
