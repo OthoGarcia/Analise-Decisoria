@@ -165,7 +165,7 @@ def preencheMatrizTri(request):
 
     mCredAB = matrizCredibilidadeTRI(request.session['alternativa'], request.session['classes'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConAB, mDesAB, request.session['limites'], 0)
     mCredBA = matrizCredibilidadeTRI(request.session['alternativa'], request.session['classes'], int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), mConBA, mDesBA, request.session['limites'], 1)
-
+    print (mCredAB)
     subordinacao = matrizSubordinacao(request.session['alternativa'], tabela, int(request.session['qtdeAlternativa']), int(request.session['qtdeCriterio']), int(request.session['preferencia']), int(request.session['veto']), mCredAB, mCredBA, request.session['lambda'], request.session['classes'])
 
     print("Pess")
@@ -226,35 +226,36 @@ def matrizSubordinacao(cidades, tabela, nAlternativas, nCriterios, p, v, mCredib
 	return subordinacao
 
 def matrizCredibilidadeTRI(cidades, classes, nAlternativas, nCriterios, mConcordancia, mDiscordancia, limites, inverte):
-	matrizCredibilidade = []
-	mCredibilidade= []
-
-	if(inverte == 0):
-		for i in range(nAlternativas):
-			linha=[]
-			for j in range(len(mConcordancia[0])):
-				valor = 1.0
-				if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
-					valor = 1.0
-				else:
-					for k in range(nCriterios):
-						valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
-				linha.append(round(float(mConcordancia[i][j]) * float(valor), 2))
-			mCredibilidade.append(linha)
-			print mCredibilidade[i], cidades[i]
-	else:
-		for i in range(len(classes)):
-			linha=[]
-			for j in range(len(mConcordancia[0])):
-				valor = 1.0
-				if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
-					valor = 1.0
-				else:
-					for k in range(nCriterios):
-						valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
-				linha.append(round(float(mConcordancia[i][j]) * float(valor), 2))
-			mCredibilidade.append(linha)
-			print mCredibilidade[i], cidades[i]
+    matrizCredibilidade = []
+    mCredibilidade= []
+    if(inverte == 0):
+        for i in range(nAlternativas):
+            linha=[]
+            for j in range(len(mConcordancia[0])):
+                valor = 1.0
+                if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
+                    valor = 1.0
+                else:
+                    for k in range(nCriterios):
+                        valor *= ((1 - float(mDiscordancia[i][k])) / (1 - float(mConcordancia[i][j])))
+                linha.append(round(float(mConcordancia[i][j]) * float(valor), 2))
+                mCredibilidade.append(linha)
+            print mCredibilidade[i], cidades[i]
+    else:
+        for i in range(len(classes)):
+            linha=[]
+            for j in range(len(mConcordancia[0])):
+                valor = 1.0
+                if(float(mDiscordancia[i][j]) > float(mConcordancia[i][j])):
+                    valor = 1.0
+                if (float(mConcordancia[i][j]) == 1):
+                    valor = 1.0
+                else:
+                    for k in range(nCriterios):
+                        valor *= ((1 - float(mDiscordancia[i][k])) / (1 - mConcordancia[i][j]))
+                    linha.append(round(float(mConcordancia[i][j]) * float(valor), 2))
+                mCredibilidade.append(linha)
+            print mCredibilidade[i], cidades[i]
 	return mCredibilidade
 
 def matrizConcordanciaTRI(cidades, classes, tabela, nAlternativas, nCriterios, vetorPesos, p, q, limites, inverte):
@@ -413,7 +414,7 @@ def preencheMatrizIII (request):
         tabela.append(linha)
 
     mCon = matrizConcordanciaIII(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'], request.session['preferencia'], request.session['indiferenca'])
-    mDes = matrizDiscordanciaIII(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'], request.session['preferencia'], request.session['vetor'])
+    mDes = matrizDiscordanciaIII(request.session['alternativa'], tabela, len(tabela), len(tabela[0]), request.session['pesos'], request.session['preferencia'], request.session['veto'])
     '''mVeto = calculaMveto(mCon, mDes, c, d, len(tabela))
     kernel = calculaKernel(mVeto, len(tabela), alternativa )
     '''
@@ -438,7 +439,7 @@ def preencheMatrizIII (request):
 
 def electreIII_valores (request):
     if request.method   == 'POST':
-        riterioFormSet.montaVetorCriterio
+        criterioFormSet.montaVetorCriterio
         formCapEntra     = captura_entrada_form(request.POST)
         qtdeAlternativa  = request.POST['qtdeAlternativa']
         qtdeCriterio     = request.POST['qtdeCriterio']
@@ -540,7 +541,7 @@ def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            csv_reader_electreIII(request)
+            csv_reader(request)
     else:
         form = UploadFileForm()
     return render(request, 'main/insert_tema_tamanho.html', {'arquivo': form})
@@ -605,7 +606,7 @@ def csv_reader(request):
                     resultMveto.append('-')
                     resultDes.append('-')
 
-    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
+    return render(request,'main/dados.html', {'alternativas': alternativa,'tabela': result, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela[i])+1 , 'result': result, 'mVeto': resultMveto , 'kernel': kernel, 'iT': len(tabela[i])+1 })
 
 def csv_reader_electreIII(request):
     """
@@ -648,15 +649,12 @@ def csv_reader_electreIII(request):
             else:
                 result.append(tabela[i][j-1])
     print result
-    return render(request,'main/dados.html', {'alternativas': alternativa, 'criterios': criterios, 'tabela': tabela, 'mCon': mCon, 'i': len(tabela[i])+1 , 'result': result })
+    return render(request,'main/dados.html', {'alternativas': alternativa, 'criterios': criterios, 'tabela': tabela, 'mCon': resultCon, 'i': len(tabela[i])+1 ,'mDes': resultDes ,'result': result })
 
 def matrizConcordanciaI(cidades, tabela, nLinhas, nColunas, vetorPesos):
 
     somaPesos = 0
     mConcordancia = []
-
-    return render(request,'main/dados.html', {'kernel': kernel,'mVeto': resultMveto,'alternativas': alternativa,'tabela': tabela, 'criterios': criterios, 'mDes': resultDes, 'mCon': resultCon, 'i': len(tabela)+1 ,'iT': len(tabela[i])+1,  'result': result })
-
     for x in range(len(vetorPesos)):
         somaPesos += float(vetorPesos[x].replace(',','.'))
 
@@ -690,13 +688,13 @@ def matrizConcordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, q):
                 somatorioW = 0
                 for y in range(len(tabela[j])):
                     valor = 0
-                    if float(tabela[i][y]) > (float(tabela[j][y]) - q):
+                    if float(tabela[i][y]) <= (float(tabela[j][y]) + float(q)):
                         valor = 1
                     else:
-                        if float(tabela[i][y]) <= ((float(tabela[j][y]) - p)):
+                        if float(tabela[i][y]) >= ((float(tabela[j][y]) + float(p))):
                             valor = 0
                         else:
-                            somatorioW += float(vetorPesos[y]) * (p-(float(tabela[i][y])- float(tabela[j][y]))/p-q)
+                            somatorioW += float(vetorPesos[y]) * (p-(float(tabela[i][y])- float(tabela[j][y]))/float(p)-float(q))
                     if valor == 1:
                         somatorioW += float(vetorPesos[y])
                 result = 1.0/somaPesos * somatorioW
@@ -745,14 +743,14 @@ def matrizDiscordanciaIII(cidades, tabela, nLinhas, nColunas, vetorPesos, p, v):
                 if i==y or j==y:
                     linha.append(0)
                 else:
-                    if float(tabela[i][y]) > (float(tabela[j][y]) - p):
+                    if float(tabela[i][y]) <= (float(tabela[j][y]) + float(p)):
                         linha.append(0)
                     else:
-                        if float(tabela[i][y]) < (float(tabela[j][y]) - v):
+                        if float(tabela[i][y]) >= (float(tabela[j][y]) + float(v)):
                             linha.append(1)
 
                         else:
-                            result = ((float(tabela[i][y]) - float(tabela[j][y]) - p)/v-p)
+                            result = ((float(tabela[i][y]) - float(tabela[j][y]) - float(p))/float(v)-float(p))
                             linha.append(round(result, 2))
 
             mDiscordancia.append(linha)
