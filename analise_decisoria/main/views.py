@@ -20,6 +20,85 @@ def resultado_matriz(request):
 def sobre(request):
     return render(request, 'main/sobre.html', {})
 
+def ahp_upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_reader_ahp(request)
+    else:
+        form = UploadFileForm()
+    return render(request, 'ahp/insert_tema_tamanho.html', {'arquivo': form})
+
+def csv_reader_ahp(request):
+    """
+    Read a csv file
+    """
+    file = request.FILES['file']
+    data = [row for row in csv.reader(file.read().splitlines())]
+    focoprincipal=data[0][1]
+    qtdeAlternativa=data[1][1]
+    qtdeCriterio=data[3][1]
+    print('Qntidade alternativas',qtdeAlternativa)
+    print('qtdeCriterio', qtdeCriterio)
+    alternativa = []
+    for alt in data[2]:
+        alternativa.append(alt)
+    criterios = []
+    for crt in data[4]:
+        criterios.append(crt)
+    print('')
+    alternativa.pop(-1)
+    print(alternativa)
+    criterios.pop(-1)
+    print(criterios)
+    print('')
+    matrizDesemCrt=[]
+    inicial=linhaindex(data,"#desempenhocrt")+1
+    print(inicial)
+    final=inicial+int(qtdeCriterio)
+    print(final)
+    tmp=data[inicial:final]
+    for i in tmp:
+        i.pop(0)
+        linha=[]
+        for j in i:
+            linha.append(float(j.replace(',','.')))
+        matrizDesemCrt.append(linha)
+    print(matrizDesemCrt)
+    matrizDesemAlt=[]
+    for i in range(int(qtdeAlternativa)):
+        inicial=linhaindex(data,"#desempenhoalt"+str(i))+1
+        final=inicial+int(qtdeAlternativa)
+        tmp=data[inicial:final]
+        matrizAlt=[]
+        for i in tmp:
+            linha=[]
+            i.pop(0)
+            for j in i:
+                linha.append(float(j.replace(',','.')))
+            matrizAlt.append(linha)
+        matrizDesemAlt.append(matrizAlt)
+    for i in matrizDesemAlt:
+        print(i)
+    norm = normalizar(matrizDesemAlt)
+    normFP = normalizarFP(matrizDesemCrt)
+    pml=[]
+    for i in range(len(norm)):
+        pml.append(calcularPML(norm[i]))
+    pmlfp=calcularPMLFP(normFP)
+    pg=calcularPG(pml,pmlfp)
+    ic=inconsistencia(matrizDesemAlt, pml)
+    rc=razaoConsistencia(ic, int(qtdeAlternativa))
+    analise(rc, criterios)
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': focoprincipal})
+
+def linhaindex(m, key):
+    index=-1
+    for i in range(len(m)):
+        if key==m[i][0]:
+            index=i
+    return index
+
 def ahp_informaCriterioAlternativa(request):
     qtdeAlternativa  = request.POST['qtdeAlternativa']
     qtdeCriterio     = request.POST['qtdeCriterio']
@@ -960,3 +1039,146 @@ def calculaKernel(matrizVeto,nLinhas, cidades):
                     if cidades[k] not in kernel:
                         kernel.append(cidades[k])
     return kernel
+
+def razaoConsistencia(ic, ordemDaMatriz):
+    icr=[
+        0.00,
+        0.00,
+        0.00,
+        0.58,
+        0.90,
+        1.12,
+        1.24,
+        1.32,
+        1.41,
+        1.45
+        ]
+    print("ICR=,", icr[ordemDaMatriz])
+    rc=[]
+    for i in range(len(ic)):
+        rc.append(ic[i]/icr[ordemDaMatriz])
+    return rc
+
+def analise(rc, crt):
+    fora=[]
+    for i in range(len(rc)):
+        if rc[i]>=0.1:
+            fora.append(crt[rc.index(max(rc))])
+    if len(fora)>0:
+        for i in fora:
+            print(" ",i)
+    else:
+        print('Tudo OK!')
+
+def inconsistencia(dp, pml):
+    n=len(dp[0])
+    ic=[]
+    for i in range(len(dp)):
+        ic.append(modulo(autovalores(dp[i][:], pml[i])-n)/(n-1))
+    return ic
+
+def autovalores(dp, pml):
+    dpaux=[]
+    for i in range(len(dp)):
+        col=[]
+        for j in range(len(dp[i])):
+            col.append(dp[i][j]*pml[j])
+        dpaux.append(col)
+    priaux=[]
+    for i in range(len(dpaux)):
+        priaux.append(somalinha(dpaux[i])/pml[i])
+    lmax=somalinha(priaux)/len(priaux)
+    return lmax
+
+def calcularPG(pml,pmlfp):
+    pg=[]
+    soma=0
+    linha=len(pml)
+    col=len(pml[0])
+    for i in range(col):
+        soma=0
+        for j in range(linha):
+            soma+=pmlfp[j]*pml[j][i]
+        pg.append(soma)
+    return pg
+
+def calcularPMLFP(dp):
+    pml=[]
+    for i in range(len(dp)):
+        somalinha=0
+        for j in range(len(dp[i])):
+            somalinha+=round(dp[i][j],2)
+        somalinha/=len(dp)
+        pml.append(round(somalinha,2))
+    return pml
+
+def calcularPML(dp):
+    pml=[]
+    for i in range(len(dp[0])):
+        somalinha=0
+        for j in range(len(dp[0][i])):
+            somalinha+=dp[0][i][j]
+        somalinha/=len(dp[0][i])
+        pml.append(somalinha)
+    return pml
+def normalizarFP(dp):
+    scrt=[]
+    norm=[]
+    for i in range(len(dp)):
+        soma=0
+        for j in range(len(dp[i])):
+            soma+=dp[j][i]
+        scrt.append(soma)
+    for i in range(len(dp)):
+        linha=[]
+        for j in range(len(dp[i])):
+            linha.append(round(dp[i][j]/scrt[j],2))
+        norm.append(linha)
+    return norm
+
+def normalizar(dp):
+    scrt=[]
+    norm=[]
+    for i in range(len(dp)):
+        scrt.append(somacoluna(dp[i]))
+    for i in range(len(dp)):
+        norm.append(divCelulas(dp[i], scrt[i]))
+    return norm
+
+def divCelulas(dp, src):
+    norm=[]
+    linha=[]
+    for i in range(len(dp)):
+        col=[]
+        for j in range(len(dp[i])):
+            col.append(dp[i][j]/src[j])
+        linha.append(col)
+    norm.append(linha)
+    return (norm)
+
+
+def listZero(size):
+    lista=[]
+    for i in range(size):
+        lista.append(0.0)
+    return lista
+
+def somacoluna(dp):
+    tmp=dp[:]
+    soma=listZero(len(tmp[0]))
+    for i in range(len(tmp)):
+        for j in range(len(tmp[i])):
+            soma[j]+=tmp[i][j]
+    return (soma)
+
+def somalinha(pmlaux):
+    soma=0
+    for i in range(len(pmlaux)):
+        soma+=pmlaux[i]
+    return soma
+
+def modulo(x):
+    if(x<0):
+        return x*-1
+    else:
+        return x
