@@ -41,10 +41,10 @@ def csv_reader_ahp(request):
     print('Qntidade alternativas',qtdeAlternativa)
     print('qtdeCriterio', qtdeCriterio)
     alternativas = []
-    for alt in data[2]:
+    for alt in data[4]:
         alternativas.append(alt)
     criterios = []
-    for crt in data[4]:
+    for crt in data[2]:
         criterios.append(crt)
     print('')
     alternativas.pop(-1)
@@ -90,7 +90,26 @@ def csv_reader_ahp(request):
     ic=inconsistencia(matrizDesemAlt, pml)
     rc=razaoConsistencia(ic, int(qtdeAlternativa))
     analise(rc, criterios)
-    return render(request, 'ahp/ahp_resultado.html', {'resultado': focoprincipal, 'criterios': criterios, 'alternativas': alternativas, 'prioridades': pg})
+    print (len(pml))
+    print (len(pml[0]))
+    print (pg)
+    resultado={}
+    resultado = prepararTabela(pml, pg, alternativas)
+    parecer=mostrarResultado(pg, alternativas, focoprincipal)
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': resultado, 'criterios': criterios, 'focoprincipal': focoprincipal, 'prioridades': pg, 'parecer': parecer})
+def mostrarResultado(pg, alt, fp):
+    return "A alternativa "+alt[pg.index(max(pg))]+" aparece como a mais indicada para "+fp+", em funcao dos criterios definidos e das suas respectivas importancias."
+
+def prepararTabela(pml, pg, alt):
+    resultado=[]
+    for i in range(len(pml)):
+        linha=[]
+        linha.append("<th>"+alt[i]+"</th>")
+        for j in range(len(pml[i])):
+            linha.append("<td>"+str(pml[i][j])+"</td>")
+        linha.append("<td>"+str(pg[i])+"</td>")
+        resultado.append(linha)
+    return resultado
 
 def linhaindex(m, key):
     index=-1
