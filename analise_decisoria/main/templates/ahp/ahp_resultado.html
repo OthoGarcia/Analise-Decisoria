@@ -9,27 +9,29 @@
      <form id="loginform" class="form-horizontal" role="form" action="{% url 'ahp_informaCriterioAlternativa' %}" method="POST" >
        {% csrf_token %} <!-- Para poder exibir o que foi submetido. -->
      {{ resultado }}
+     <div><h1>Avaliação Global das Alternativas</h1></div>
      <div class="table-responsive">
        <table class="table">
          <thead>
            <tr>
              <th></th>
-             <th>Criterio 1</th>
-             <th>Criterio 2</th>
+             {% for criterio in criterios %}
+               <th>{{ criterio }} </th>
+             {% endfor %}
            </tr>
          </thead>
          <tbody>
+           {% for alt in alternativas %}
            <tr>
-             <th>Alternativa 1</th>
-             <th>123</th>
-             <th>123</th>
+
+             <th>{{alt}}</th>
+
+             <td>{{prioridades}}</td>
+             <td>123</th>
              <td></td>
            </tr>
-           <tr>
-             <th>Alternativa 2</th>
-             <th>123</th>
-             <th>123</th>
-           </tr>
+           {% endfor %}
+
          </tbody>
        </table>
      </div>

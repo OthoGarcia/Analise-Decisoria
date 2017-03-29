@@ -40,15 +40,15 @@ def csv_reader_ahp(request):
     qtdeCriterio=data[3][1]
     print('Qntidade alternativas',qtdeAlternativa)
     print('qtdeCriterio', qtdeCriterio)
-    alternativa = []
+    alternativas = []
     for alt in data[2]:
-        alternativa.append(alt)
+        alternativas.append(alt)
     criterios = []
     for crt in data[4]:
         criterios.append(crt)
     print('')
-    alternativa.pop(-1)
-    print(alternativa)
+    alternativas.pop(-1)
+    print(alternativas)
     criterios.pop(-1)
     print(criterios)
     print('')
@@ -90,7 +90,7 @@ def csv_reader_ahp(request):
     ic=inconsistencia(matrizDesemAlt, pml)
     rc=razaoConsistencia(ic, int(qtdeAlternativa))
     analise(rc, criterios)
-    return render(request, 'ahp/ahp_resultado.html', {'resultado': focoprincipal})
+    return render(request, 'ahp/ahp_resultado.html', {'resultado': focoprincipal, 'criterios': criterios, 'alternativas': alternativas, 'prioridades': pg})
 
 def linhaindex(m, key):
     index=-1
